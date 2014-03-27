@@ -1,1 +1,5 @@
-<RCC/>
+<RCC>
+    <qresource prefix="/sql">
+        <file alias="schemaTables">Resources/SQL/MagneeCuistax.sql</file>
+    </qresource>
+</RCC>
