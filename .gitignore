@@ -1,0 +1,10 @@
+# pas de fichier .a ou .o
+*.[ao]
+#ignorer les fichiers de profil Qt
+*.pro.user
+#ignorer les fichier DS_Store (MAC)
+*.DS_Store
+#ignorer les fichiers temporaires (Windows)
+*~
+# ignorer uniquement le fichier TODO à la racine du projet
+/TODO
