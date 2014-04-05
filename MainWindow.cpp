@@ -91,3 +91,11 @@ void MainWindow::closeEvent(QCloseEvent* event)
 
     QMainWindow::closeEvent(event);
 }
+
+void MainWindow::on_actionQuit_triggered(void)
+{
+    // Save the state of the MainWindow and its widgets
+    this->writeSettings();
+
+    qApp->quit();
+}

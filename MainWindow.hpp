@@ -69,6 +69,11 @@ class MainWindow : public QMainWindow
          */
         virtual void closeEvent(QCloseEvent* event);
 
+    private slots:
+
+        // Autoconnect
+        void on_actionQuit_triggered(void);
+
     protected:
 
         Ui::MainWindow *ui;
