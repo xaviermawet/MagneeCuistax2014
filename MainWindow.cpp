@@ -22,6 +22,11 @@ MainWindow::MainWindow(QWidget* parent) :
 
     // Restore previous MainWindows layout settings
     this->readSettings();
+
+    // Connect to previous database if exists
+    if (DataBaseManager::restorePreviousDataBase())
+        this->ui->statusBar->showMessage(
+                tr("Latest project automatically loaded"), 4000);
 }
 
 MainWindow::~MainWindow(void)
@@ -98,4 +103,35 @@ void MainWindow::on_actionQuit_triggered(void)
     this->writeSettings();
 
     qApp->quit();
+}
+
+void MainWindow::on_actionNewProject_triggered(void)
+{
+    // Get new project file path
+    QString dbFilePath = QFileDialog::getSaveFileName(
+                this, tr("Create new project file"), QDir::homePath(),
+                tr("Projet Magnee Cuistax (*.db)"));
+
+    // User canceled (nothing to save)
+    if(dbFilePath.isEmpty())
+    {
+        this->ui->statusBar->showMessage(tr("Action canceled"), 4000);
+        return;
+    }
+
+    try
+    {
+        // Create database
+        if(DataBaseManager::createDataBase(dbFilePath))
+            this->statusBar()->showMessage(
+                    tr("Project successfully created"), 4000);
+        else
+            this->statusBar()->showMessage(
+                    tr("Error : project not created"), 4000);
+    }
+    catch (NException const& exception)
+    {
+        QMessageBox::warning(this, tr("Enable to create project file"),
+                             exception.what());
+    }
 }

@@ -9,6 +9,8 @@
     #include <QtGui>
 #endif
 
+#include "DataBase/DataBaseManager.hpp"
+
 #define QSETTINGS_MAINWINDOW_KEYWORD "MainWindow"
 
 namespace Ui {
@@ -73,6 +75,7 @@ class MainWindow : public QMainWindow
 
         // Autoconnect
         void on_actionQuit_triggered(void);
+        void on_actionNewProject_triggered(void);
 
     protected:
 
