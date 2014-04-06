@@ -15,13 +15,16 @@ TEMPLATE = app
 SOURCES += main.cpp\
         MainWindow.cpp \
     Utils/NException.cpp \
-    DataBase/DataBaseManager.cpp
+    DataBase/DataBaseManager.cpp \
+    Dialogs/DialogAddTeam.cpp
 
 HEADERS  += MainWindow.hpp \
     Utils/NException.hpp \
-    DataBase/DataBaseManager.hpp
+    DataBase/DataBaseManager.hpp \
+    Dialogs/DialogAddTeam.hpp
 
-FORMS    += MainWindow.ui
+FORMS    += MainWindow.ui \
+    Dialogs/DialogAddTeam.ui
 
 RESOURCES += \
     Resources.qrc

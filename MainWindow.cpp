@@ -135,3 +135,11 @@ void MainWindow::on_actionNewProject_triggered(void)
                              exception.what());
     }
 }
+
+void MainWindow::on_actionAddTeam_triggered(void)
+{
+    DialogAddTeam dial;
+
+    if (dial.exec() != QDialog::Accepted) // User canceled
+        return;
+}
