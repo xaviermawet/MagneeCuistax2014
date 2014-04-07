@@ -41,8 +41,6 @@ class DialogAddTeam : public QDialog
         // Autoconnect
         void on_lineEditTeamName_textEdited(QString const& teamName);
         void on_spinBoxCuistaxNumber_valueChanged(int cuistaxNumber);
-        void on_pushButtonSave_clicked(void);
-        void on_pushButtonCancel_clicked(void);
 
     private:
 

@@ -16,8 +16,10 @@ DialogAddTeam::~DialogAddTeam(void)
 
 void DialogAddTeam::updateSaveButtonState(void)
 {
-    this->ui->pushButtonSave->setEnabled(
-                (_validTeamName && _validCuistaxNumber) ? true : false);
+    this->ui->buttonBox->setStandardButtons(
+                (this->_validTeamName && _validCuistaxNumber) ?
+                    QDialogButtonBox::Cancel | QDialogButtonBox::Save :
+                    QDialogButtonBox::Cancel);
 }
 
 void DialogAddTeam::on_lineEditTeamName_textEdited(QString const& teamName)
@@ -84,14 +86,4 @@ void DialogAddTeam::on_spinBoxCuistaxNumber_valueChanged(int cuistaxNumber)
     }
 
     this->updateSaveButtonState();
-}
-
-void DialogAddTeam::on_pushButtonSave_clicked(void)
-{
-    this->accept();
-}
-
-void DialogAddTeam::on_pushButtonCancel_clicked(void)
-{
-    this->reject();
 }
