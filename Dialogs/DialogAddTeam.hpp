@@ -32,6 +32,18 @@ class DialogAddTeam : public QDialog
          */
         virtual ~DialogAddTeam(void);
 
+        /*!
+         * \brief cuistaxNumber : get the cuistax number
+         * \return cuistax number
+         */
+        int cuistaxNumber(void) const;
+
+        /*!
+         * \brief teamName : get the team name
+         * \return team name
+         */
+        QString teamName(void) const;
+
     protected:
 
         void updateSaveButtonState(void);

@@ -25,6 +25,9 @@ class DataBaseManager
                                    QVariantList const& values = QVariantList(),
                                    bool forwardOnly = true);
         static void execTransaction(QSqlQuery& query);
+        static QSqlQuery execTransaction(QString const& queryString,
+                                         QVariantList const& values = QVariantList(),
+                                         bool forwardOnly = true);
         static void execBatch(QSqlQuery& query,
                               QSqlQuery::BatchExecutionMode mode
                               = QSqlQuery::ValuesAsRows);

@@ -14,6 +14,16 @@ DialogAddTeam::~DialogAddTeam(void)
     delete this->ui;
 }
 
+int DialogAddTeam::cuistaxNumber(void) const
+{
+    return this->ui->spinBoxCuistaxNumber->value();
+}
+
+QString DialogAddTeam::teamName(void) const
+{
+    return this->ui->lineEditTeamName->text();
+}
+
 void DialogAddTeam::updateSaveButtonState(void)
 {
     this->ui->buttonBox->setStandardButtons(

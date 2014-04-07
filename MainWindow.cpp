@@ -142,4 +142,22 @@ void MainWindow::on_actionAddTeam_triggered(void)
 
     if (dial.exec() != QDialog::Accepted) // User canceled
         return;
+
+    // Insert new team in database
+
+    QSqlQuery insertQuery("INSERT INTO TEAM (num_cuistax, name) values (?, ?)");
+    insertQuery.addBindValue(dial.cuistaxNumber());
+    insertQuery.addBindValue(dial.teamName());
+
+    try
+    {
+        DataBaseManager::execTransaction(insertQuery);
+        this->statusBar()->showMessage(
+                    tr("Team ") + dial.teamName() + tr(" created"), 4000);
+    }
+    catch(NException const& exception)
+    {
+        QMessageBox::warning(this, tr("Enable to create team ")
+                             + dial.teamName(), exception.what());
+    }
 }

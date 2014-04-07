@@ -69,7 +69,7 @@ QSqlQuery DataBaseManager::execQuery(const QString &queryString,
     return query; // Implicit sharing
 }
 
-void DataBaseManager::execTransaction(QSqlQuery &query)
+void DataBaseManager::execTransaction(QSqlQuery& query)
 {
     QSqlDriver* sqlDriver = QSqlDatabase::database().driver();
 
@@ -85,6 +85,23 @@ void DataBaseManager::execTransaction(QSqlQuery &query)
     // Try to commit transaction
     if(!sqlDriver->commitTransaction())
         throw NException(QObject::tr("la validation des données à échouée"));
+}
+
+QSqlQuery DataBaseManager::execTransaction(const QString &queryString,
+                                      const QVariantList &values, bool forwardOnly)
+{
+
+    QSqlQuery query(queryString);
+
+    // bind values
+    foreach (QVariant value, values)
+        query.addBindValue(value);
+
+    query.setForwardOnly(forwardOnly);
+
+    DataBaseManager::execTransaction(query);
+
+    return query;
 }
 
 void DataBaseManager::execBatch(QSqlQuery &query,
