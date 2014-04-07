@@ -2,7 +2,7 @@
 #include "ui_DialogAddTeam.h"
 
 DialogAddTeam::DialogAddTeam(QWidget *parent) :
-    QDialog(parent), ui(new Ui::DialogAddTeam), _regex("^[a-zA-Z0-9]{3,80}$")
+    QDialog(parent), ui(new Ui::DialogAddTeam), _regex("^[a-zA-Z0-9 ]{3,80}$")
 {
     // GUI Configuration
     this->ui->setupUi(this);
@@ -15,20 +15,15 @@ DialogAddTeam::~DialogAddTeam(void)
 
 void DialogAddTeam::on_lineEditTeamName_textEdited(QString const& teamName)
 {
-    // Regex match
-    if (!this->_regex.exactMatch(teamName))
-    {
-        this->ui->labelTeamNameInformation->setText(
-                    tr("<font color='red'>Min 3 characters. "
-                       "Only letters and numbers</font>"));
-        return;
-    }
-
-    // Check if a team with the same name already exists
-    QVariantList param; param << teamName;
-
     try
     {
+        // Regex match
+        if (!this->_regex.exactMatch(teamName))
+            throw NException(tr("Min 3 characters. Only letters and numbers"));
+
+        // Check if a team with the same name already exists
+        QVariantList param; param << teamName;
+
         QSqlQuery query = DataBaseManager::execQuery(
                     "SELECT COUNT(*) FROM TEAM WHERE name LIKE ?", param);
 
@@ -36,17 +31,16 @@ void DialogAddTeam::on_lineEditTeamName_textEdited(QString const& teamName)
             throw NException(query.lastError().text());
 
         // Check if the name already exists
-        if (query.value(0).toInt() == 0)
-            this->ui->labelTeamNameInformation->setText(
+        if (query.value(0).toInt() != 0)
+            throw NException(tr("Team name already exists"));
+
+        this->ui->labelTeamNameInformation->setText(
                     tr("<font color='green'>Team name available</font>"));
-        else
-            this->ui->labelTeamNameInformation->setText(
-                    tr("<font color='red'>Team name already exists</font>"));
     }
     catch(NException const& exception)
     {
-        QMessageBox::warning(this, tr("Team name : Error"),
-                             tr("An error occurred : ") + exception.what());
+        this->ui->labelTeamNameInformation->setText(
+                    "<font color='red'>" + exception.what() + "</font>");
     }
 }
 
