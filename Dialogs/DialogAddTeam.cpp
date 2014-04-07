@@ -85,3 +85,13 @@ void DialogAddTeam::on_spinBoxCuistaxNumber_valueChanged(int cuistaxNumber)
 
     this->updateSaveButtonState();
 }
+
+void DialogAddTeam::on_pushButtonSave_clicked(void)
+{
+    this->accept();
+}
+
+void DialogAddTeam::on_pushButtonCancel_clicked(void)
+{
+    this->reject();
+}
