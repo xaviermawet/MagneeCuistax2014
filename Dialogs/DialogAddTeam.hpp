@@ -9,6 +9,8 @@
     #include <QtGui>
 #endif
 
+#include "DataBase/DataBaseManager.hpp"
+
 namespace Ui {
 class DialogAddTeam;
 }
@@ -30,9 +32,15 @@ class DialogAddTeam : public QDialog
          */
         virtual ~DialogAddTeam(void);
 
+    private slots:
+
+        // Autoconnect
+        void on_lineEditTeamName_textEdited(QString const& teamName);
+
     private:
 
         Ui::DialogAddTeam *ui;
+        QRegExp _regex;
 };
 
 #endif /* __DIALOGADDTEAM_HPP__ */
