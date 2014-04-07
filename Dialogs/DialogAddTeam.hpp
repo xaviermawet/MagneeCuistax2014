@@ -32,6 +32,10 @@ class DialogAddTeam : public QDialog
          */
         virtual ~DialogAddTeam(void);
 
+    protected:
+
+        void updateSaveButtonState(void);
+
     private slots:
 
         // Autoconnect
@@ -40,8 +44,10 @@ class DialogAddTeam : public QDialog
 
     private:
 
-        Ui::DialogAddTeam *ui;
-        QRegExp _regex;
+        Ui::DialogAddTeam*  ui;
+        QRegExp             _regex;
+        bool                _validTeamName;
+        bool                _validCuistaxNumber;
 };
 
 #endif /* __DIALOGADDTEAM_HPP__ */

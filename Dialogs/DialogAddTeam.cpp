@@ -2,7 +2,8 @@
 #include "ui_DialogAddTeam.h"
 
 DialogAddTeam::DialogAddTeam(QWidget *parent) :
-    QDialog(parent), ui(new Ui::DialogAddTeam), _regex("^[a-zA-Z0-9 ]{3,80}$")
+    QDialog(parent), ui(new Ui::DialogAddTeam), _regex("^[a-zA-Z0-9 ]{3,80}$"),
+    _validTeamName(false), _validCuistaxNumber(false)
 {
     // GUI Configuration
     this->ui->setupUi(this);
@@ -11,6 +12,12 @@ DialogAddTeam::DialogAddTeam(QWidget *parent) :
 DialogAddTeam::~DialogAddTeam(void)
 {
     delete this->ui;
+}
+
+void DialogAddTeam::updateSaveButtonState(void)
+{
+    this->ui->pushButtonSave->setEnabled(
+                (_validTeamName && _validCuistaxNumber) ? true : false);
 }
 
 void DialogAddTeam::on_lineEditTeamName_textEdited(QString const& teamName)
@@ -34,14 +41,18 @@ void DialogAddTeam::on_lineEditTeamName_textEdited(QString const& teamName)
         if (query.value(0).toInt() != 0)
             throw NException(tr("Team name already exists"));
 
+        this->_validTeamName = true;
         this->ui->labelTeamNameInformation->setText(
                     tr("<font color='green'>Team name available</font>"));
     }
     catch(NException const& exception)
     {
+        this->_validTeamName = false;
         this->ui->labelTeamNameInformation->setText(
                     "<font color='red'>" + exception.what() + "</font>");
     }
+
+    this->updateSaveButtonState();
 }
 
 void DialogAddTeam::on_spinBoxCuistaxNumber_valueChanged(int cuistaxNumber)
@@ -58,18 +69,19 @@ void DialogAddTeam::on_spinBoxCuistaxNumber_valueChanged(int cuistaxNumber)
             throw NException(query.lastError().text());
 
         // Check if the name already exists
-        if (query.value(0).toInt() == 0)
-            this->ui->labelCuistaxNumberInformation->setText(
-                   tr("<font color='green'>Cuistax number available</font>"));
-        else
-            this->ui->labelCuistaxNumberInformation->setText(
-                  tr("<font color='red'>Cuistax number already exists</font>"));
+        if (query.value(0).toInt() != 0)
+            throw NException(tr("Cuistax number already exists"));
 
+        this->_validCuistaxNumber = true;
+        this->ui->labelCuistaxNumberInformation->setText(
+                    tr("<font color='green'>Cuistax number available</font>"));
     }
     catch(NException const& exception)
     {
-        this->ui->labelCuistaxNumberInformation->setVisible(false);
-        QMessageBox::warning(this, tr("Cuistax number : Error"),
-                             tr("An error occurred : ") + exception.what());
+        this->_validCuistaxNumber = false;
+        this->ui->labelCuistaxNumberInformation->setText(
+                    "<font color='red'>" + exception.what() + "</font>");
     }
+
+    this->updateSaveButtonState();
 }
