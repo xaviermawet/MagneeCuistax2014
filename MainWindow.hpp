@@ -81,7 +81,7 @@ class MainWindow : public QMainWindow
         // Autoconnect
         void on_actionQuit_triggered(void);
         void on_actionNewProject_triggered(void);
-        void on_actionAddTeam_triggered(void);
+        void on_actionCreateTeam_triggered(void);
 
     protected:
 

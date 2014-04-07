@@ -6,20 +6,61 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>589</width>
+    <height>388</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Magnée Cuistax 2014</string>
   </property>
-  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>10</y>
+      <width>191</width>
+      <height>301</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayoutTeamList">
+     <item>
+      <widget class="QLabel" name="labelTeamList">
+       <property name="text">
+        <string>Team list :</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QTableView" name="tableViewTeamList"/>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayoutTeamListButtonBox">
+       <item>
+        <widget class="QPushButton" name="pushButtonCreate">
+         <property name="text">
+          <string>Create</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButtonDelete">
+         <property name="text">
+          <string>Delete</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+  </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>589</width>
      <height>19</height>
     </rect>
    </property>
@@ -31,14 +72,14 @@
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
-   <widget class="QMenu" name="menu_Teams">
+   <widget class="QMenu" name="menuTeams">
     <property name="title">
      <string>&amp;Teams</string>
     </property>
-    <addaction name="actionAddTeam"/>
+    <addaction name="actionCreateTeam"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menu_Teams"/>
+   <addaction name="menuTeams"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -71,9 +112,12 @@
     <string>Ctrl+N</string>
    </property>
   </action>
-  <action name="actionAddTeam">
+  <action name="actionCreateTeam">
    <property name="text">
-    <string>&amp;Create a new team</string>
+    <string>&amp;Create</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new team</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+C</string>
@@ -82,5 +126,25 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>pushButtonCreate</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>on_actionCreateTeam_triggered()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>38</x>
+     <y>341</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>277</x>
+     <y>330</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>on_actionCreateTeam_triggered()</slot>
+ </slots>
 </ui>

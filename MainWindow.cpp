@@ -136,7 +136,7 @@ void MainWindow::on_actionNewProject_triggered(void)
     }
 }
 
-void MainWindow::on_actionAddTeam_triggered(void)
+void MainWindow::on_actionCreateTeam_triggered(void)
 {
     DialogAddTeam dial;
 
