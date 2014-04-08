@@ -2,7 +2,7 @@
 #include "ui_MainWindow.h"
 
 MainWindow::MainWindow(QWidget* parent) :
-    QMainWindow(parent), ui(new Ui::MainWindow)
+    QMainWindow(parent), ui(new Ui::MainWindow), _teamListModel(NULL)
 {
     /* The value is used by the QSettings class when it is constructed using
      * the empty constructor. This saves having to repeat this information each
@@ -25,13 +25,32 @@ MainWindow::MainWindow(QWidget* parent) :
 
     // Connect to previous database if exists
     if (DataBaseManager::restorePreviousDataBase())
+    {
         this->ui->statusBar->showMessage(
                 tr("Latest project automatically loaded"), 4000);
+
+        // Create team list model
+        this->createTeamView();
+    }
 }
 
 MainWindow::~MainWindow(void)
 {
     delete this->ui;
+    delete this->_teamListModel;
+}
+
+void MainWindow::createTeamView(void)
+{
+    if (this->_teamListModel != NULL)
+        delete this->_teamListModel;
+
+    this->_teamListModel = new SqlTableModelIdNotEditable(this);
+    this->_teamListModel->setTable("TEAM");
+    this->_teamListModel->setHeaderData(0, Qt::Horizontal, tr("Cuistax number"));
+    this->_teamListModel->setHeaderData(1, Qt::Horizontal, tr("Team name"));
+    this->ui->tableViewTeamList->setModel(this->_teamListModel);
+    this->_teamListModel->select();
 }
 
 void MainWindow::centerOnScreen(void)

@@ -11,7 +11,7 @@
 
 // Database
 #include "DataBase/DataBaseManager.hpp"
-
+#include "DataBase/SqlTableModelIdNotEditable.hpp"
 
 // Dialogs
 #include "Dialogs/DialogAddTeam.hpp"
@@ -43,6 +43,11 @@ class MainWindow : public QMainWindow
         virtual ~MainWindow(void);
 
     protected:
+
+        /*!
+         * \brief createTeamView : create a team view model based on TEAM table
+         */
+        void createTeamView(void);
 
         /*!
          * \brief centerOnScreen : center the MainWindow
@@ -85,7 +90,10 @@ class MainWindow : public QMainWindow
 
     protected:
 
-        Ui::MainWindow *ui;
+        Ui::MainWindow* ui;
+
+        // Models
+        SqlTableModelIdNotEditable* _teamListModel;
 };
 
 #endif /* __MAINWINDOW_HPP__ */

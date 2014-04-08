@@ -16,12 +16,14 @@ SOURCES += main.cpp\
         MainWindow.cpp \
     Utils/NException.cpp \
     DataBase/DataBaseManager.cpp \
-    Dialogs/DialogAddTeam.cpp
+    Dialogs/DialogAddTeam.cpp \
+    DataBase/SqlTableModelIdNotEditable.cpp
 
 HEADERS  += MainWindow.hpp \
     Utils/NException.hpp \
     DataBase/DataBaseManager.hpp \
-    Dialogs/DialogAddTeam.hpp
+    Dialogs/DialogAddTeam.hpp \
+    DataBase/SqlTableModelIdNotEditable.hpp
 
 FORMS    += MainWindow.ui \
     Dialogs/DialogAddTeam.ui
