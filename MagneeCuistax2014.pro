@@ -17,16 +17,19 @@ SOURCES += main.cpp\
     Utils/NException.cpp \
     DataBase/DataBaseManager.cpp \
     Dialogs/DialogAddTeam.cpp \
-    DataBase/SqlTableModelIdNotEditable.cpp
+    DataBase/SqlTableModelIdNotEditable.cpp \
+    Dialogs/DialogCreateRace.cpp
 
 HEADERS  += MainWindow.hpp \
     Utils/NException.hpp \
     DataBase/DataBaseManager.hpp \
     Dialogs/DialogAddTeam.hpp \
-    DataBase/SqlTableModelIdNotEditable.hpp
+    DataBase/SqlTableModelIdNotEditable.hpp \
+    Dialogs/DialogCreateRace.hpp
 
 FORMS    += MainWindow.ui \
-    Dialogs/DialogAddTeam.ui
+    Dialogs/DialogAddTeam.ui \
+    Dialogs/DialogCreateRace.ui
 
 RESOURCES += \
     Resources.qrc

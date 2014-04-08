@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>589</width>
+    <width>938</width>
     <height>388</height>
    </rect>
   </property>
@@ -76,8 +76,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>589</width>
-     <height>19</height>
+     <width>938</width>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -94,8 +94,15 @@
     </property>
     <addaction name="actionCreateTeam"/>
    </widget>
+   <widget class="QMenu" name="menuRace">
+    <property name="title">
+     <string>&amp;Race</string>
+    </property>
+    <addaction name="actionCreateRace"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTeams"/>
+   <addaction name="menuRace"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -136,7 +143,18 @@
     <string>Create a new team</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+C</string>
+    <string>Ctrl+T</string>
+   </property>
+  </action>
+  <action name="actionCreateRace">
+   <property name="text">
+    <string>&amp;Create</string>
+   </property>
+   <property name="toolTip">
+    <string>Create a new race</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
  </widget>

@@ -182,6 +182,17 @@ void MainWindow::on_actionCreateTeam_triggered(void)
     }
 }
 
+void MainWindow::on_actionCreateRace_triggered(void)
+{
+    DialogCreateRace dial;
+
+    if (dial.exec() != QDialog::Accepted) // User canceld
+        return;
+
+    // Insert new race in database
+    // TODO
+}
+
 void MainWindow::on_pushButtonDelete_clicked(void)
 {
     QItemSelectionModel* select = this->ui->tableViewTeamList->selectionModel();

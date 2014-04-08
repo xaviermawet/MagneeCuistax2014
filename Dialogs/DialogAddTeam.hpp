@@ -46,6 +46,10 @@ class DialogAddTeam : public QDialog
 
     protected:
 
+        /*!
+         * \brief updateSaveButtonState : Hide or shows the save button if
+         * the cuistax number and the team name are both valid
+         */
         void updateSaveButtonState(void);
 
     private slots:
