@@ -87,6 +87,7 @@ class MainWindow : public QMainWindow
         void on_actionQuit_triggered(void);
         void on_actionNewProject_triggered(void);
         void on_actionCreateTeam_triggered(void);
+        void on_pushButtonDelete_clicked(void);
 
     protected:
 
