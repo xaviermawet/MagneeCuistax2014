@@ -12,6 +12,7 @@
 // Database
 #include "DataBase/DataBaseManager.hpp"
 #include "DataBase/SqlTableModelIdNotEditable.hpp"
+#include "DataBase/NSqlQueryModel.hpp"
 
 // Dialogs
 #include "Dialogs/DialogAddTeam.hpp"
@@ -49,6 +50,11 @@ class MainWindow : public QMainWindow
          * \brief createTeamView : create a team view model based on TEAM table
          */
         void createTeamView(void);
+
+        /*!
+         * \brief createToolBar : create widget for toolbar
+         */
+        void createToolBar(void);
 
         /*!
          * \brief centerOnScreen : center the MainWindow
@@ -96,8 +102,11 @@ class MainWindow : public QMainWindow
 
         Ui::MainWindow* ui;
 
+        QComboBox* _comboBoxRaceList;
+
         // Models
         SqlTableModelIdNotEditable* _teamListModel;
+        NSqlQueryModel* _raceListModel;
 };
 
 #endif /* __MAINWINDOW_HPP__ */

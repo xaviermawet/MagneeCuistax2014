@@ -7,7 +7,8 @@ class SqlTableModelIdNotEditable : public QSqlTableModel
 {
     public:
 
-        explicit SqlTableModelIdNotEditable(QObject* parent = 0, QSqlDatabase db = QSqlDatabase());
+        explicit SqlTableModelIdNotEditable(
+                QObject* parent = 0, QSqlDatabase db = QSqlDatabase());
 
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
 };

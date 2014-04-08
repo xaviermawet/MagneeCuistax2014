@@ -2,7 +2,8 @@
 #include "ui_MainWindow.h"
 
 MainWindow::MainWindow(QWidget* parent) :
-    QMainWindow(parent), ui(new Ui::MainWindow), _teamListModel(NULL)
+    QMainWindow(parent), ui(new Ui::MainWindow),
+    _comboBoxRaceList(NULL), _teamListModel(NULL), _raceListModel(NULL)
 {
     /* The value is used by the QSettings class when it is constructed using
      * the empty constructor. This saves having to repeat this information each
@@ -31,13 +32,21 @@ MainWindow::MainWindow(QWidget* parent) :
 
         // Create team list model
         this->createTeamView();
+
+        // Create combobox race list
+        this->createToolBar();
     }
 }
 
 MainWindow::~MainWindow(void)
 {
     delete this->ui;
+
+    // Models
     delete this->_teamListModel;
+    delete this->_raceListModel;
+
+    delete this->_comboBoxRaceList;
 }
 
 void MainWindow::createTeamView(void)
@@ -51,6 +60,33 @@ void MainWindow::createTeamView(void)
     this->_teamListModel->setHeaderData(1, Qt::Horizontal, tr("Team name"));
     this->ui->tableViewTeamList->setModel(this->_teamListModel);
     this->_teamListModel->select();
+}
+
+void MainWindow::createToolBar(void)
+{
+    // Mainly developed with Qt Designer
+
+    if(this->_comboBoxRaceList != NULL)
+        delete this->_comboBoxRaceList;
+
+    if (this->_raceListModel != NULL)
+        delete this->_raceListModel;
+
+    // Create model
+    this->_raceListModel = new NSqlQueryModel(this);
+    this->_raceListModel->setQuery("SELECT name FROM RACE");
+
+    // Create comboBox based on raceListModel
+    this->_comboBoxRaceList = new QComboBox();
+    this->_comboBoxRaceList->setEditable(false);
+    this->_comboBoxRaceList->setModel(this->_raceListModel);
+    this->_comboBoxRaceList->setSizePolicy(QSizePolicy::Expanding,
+                                           QSizePolicy::Maximum);
+
+    // Add the comboBox to the toolBar of the MainWindow
+    this->ui->mainToolBar->addWidget(this->_comboBoxRaceList);
+
+    // TODO : connecter le signal currentIndexChanged
 }
 
 void MainWindow::centerOnScreen(void)
@@ -202,6 +238,11 @@ void MainWindow::on_actionCreateRace_triggered(void)
         DataBaseManager::execTransaction(insertQuery);
         this->statusBar()->showMessage(
                     tr("Race \"") + dial.raceName() + tr("\" created"), 4000);
+
+        this->_raceListModel->refresh();
+
+        // TODO : revenir à un index
+        this->_comboBoxRaceList->setCurrentIndex(0);
     }
     catch(NException const& exception)
     {
