@@ -218,6 +218,36 @@ void MainWindow::on_actionCreateTeam_triggered(void)
     }
 }
 
+void MainWindow::on_actionDeleteTeam_triggered(void)
+{
+    QItemSelectionModel* select = this->ui->tableViewTeamList->selectionModel();
+
+    // Nothing selected
+    if(!select->hasSelection())
+        return;
+
+    QModelIndexList selectedIndexes = select->selectedIndexes();
+
+    QSqlQuery deleteQuery("DELETE FROM TEAM WHERE num_cuistax = ?");
+    deleteQuery.addBindValue(selectedIndexes.first().data());
+
+    try
+    {
+        DataBaseManager::execTransaction(deleteQuery);
+        this->statusBar()->showMessage(
+                    tr("Team \"") + selectedIndexes.last().data().toString() +
+                    tr("\" deleted"), 4000);
+
+        this->_teamListModel->select();
+    }
+    catch(NException const& exception)
+    {
+        QMessageBox::warning(this, tr("Enable to delete team ")
+                             + selectedIndexes.last().data().toString(),
+                             exception.what());
+    }
+}
+
 void MainWindow::on_actionCreateRace_triggered(void)
 {
     DialogCreateRace dial;
@@ -280,36 +310,6 @@ void MainWindow::on_actionDeleteRace_triggered(void)
     catch(NException const& exception)
     {
         QMessageBox::warning(this, tr("Enable to delete race ") + raceName,
-                             exception.what());
-    }
-}
-
-void MainWindow::on_pushButtonDelete_clicked(void)
-{
-    QItemSelectionModel* select = this->ui->tableViewTeamList->selectionModel();
-
-    // Nothing selected
-    if(!select->hasSelection())
-        return;
-
-    QModelIndexList selectedIndexes = select->selectedIndexes();
-
-    QSqlQuery deleteQuery("DELETE FROM TEAM WHERE num_cuistax = ?");
-    deleteQuery.addBindValue(selectedIndexes.first().data());
-
-    try
-    {
-        DataBaseManager::execTransaction(deleteQuery);
-        this->statusBar()->showMessage(
-                    tr("Team \"") + selectedIndexes.last().data().toString() +
-                    tr("\" deleted"), 4000);
-
-        this->_teamListModel->select();
-    }
-    catch(NException const& exception)
-    {
-        QMessageBox::warning(this, tr("Enable to delete team ")
-                             + selectedIndexes.last().data().toString(),
                              exception.what());
     }
 }

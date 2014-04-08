@@ -93,10 +93,13 @@ class MainWindow : public QMainWindow
         // Autoconnect
         void on_actionQuit_triggered(void);
         void on_actionNewProject_triggered(void);
+
         void on_actionCreateTeam_triggered(void);
+        void on_actionDeleteTeam_triggered(void);
+
         void on_actionCreateRace_triggered(void);
         void on_actionDeleteRace_triggered(void);
-        void on_pushButtonDelete_clicked(void);
+
         void on_tableViewTeamList_activated(const QModelIndex &index);
 
     protected:

@@ -53,14 +53,14 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayoutTeamListButtonBox">
        <item>
-        <widget class="QPushButton" name="pushButtonCreate">
+        <widget class="QPushButton" name="pushButtonCreateTeam">
          <property name="text">
           <string>Create</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButtonDelete">
+        <widget class="QPushButton" name="pushButtonDeleteTeam">
          <property name="text">
           <string>Delete</string>
          </property>
@@ -93,6 +93,7 @@
      <string>&amp;Teams</string>
     </property>
     <addaction name="actionCreateTeam"/>
+    <addaction name="actionDeleteTeam"/>
    </widget>
    <widget class="QMenu" name="menuRace">
     <property name="title">
@@ -188,6 +189,17 @@
     <string>Meta+Shift+R</string>
    </property>
   </action>
+  <action name="actionDeleteTeam">
+   <property name="text">
+    <string>&amp;Delete selected team</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete the current selected team</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+T</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
@@ -195,14 +207,14 @@
  </resources>
  <connections>
   <connection>
-   <sender>pushButtonCreate</sender>
+   <sender>pushButtonCreateTeam</sender>
    <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>on_actionCreateTeam_triggered()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>38</x>
-     <y>341</y>
+     <x>39</x>
+     <y>478</y>
     </hint>
     <hint type="destinationlabel">
      <x>277</x>
@@ -210,8 +222,25 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButtonDeleteTeam</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>on_actionDeleteTeam_triggered()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>227</x>
+     <y>460</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>396</x>
+     <y>426</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>on_actionCreateTeam_triggered()</slot>
+  <slot>on_actionDeleteTeam_triggered()</slot>
  </slots>
 </ui>
