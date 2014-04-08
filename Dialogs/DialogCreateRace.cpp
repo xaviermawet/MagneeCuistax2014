@@ -3,8 +3,8 @@
 
 DialogCreateRace::DialogCreateRace(QWidget* parent) :
     QDialog(parent), ui(new Ui::DialogCreateRace),
-    _regex("^[a-zA-Z0-9 ]{3,80}$"), _validName(false), _validPlace(false),
-    _validDistance(false)
+    _regex("^[a-zA-Z0-9àáâãäåçèéêëìíîïðòóôõöùúûüýÿ ]{3,80}$"),
+    _validName(false), _validPlace(false), _validDistance(false)
 {
     this->ui->setupUi(this);
 
@@ -55,4 +55,24 @@ void DialogCreateRace::on_lineEditName_textEdited(QString const& raceName)
         this->ui->labelNameInformation->setText(
                     "<font color='red'>" + exception.what() + "</font>");
     }
+
+    this->updateSaveButtonState();
+}
+
+void DialogCreateRace::on_lineEditPlace_textEdited(QString const& racePlace)
+{
+    // Regex match
+    this->ui->labelPlaceInformation->setText(
+                ((this->_validPlace = this->_regex.exactMatch(racePlace))) ?
+                    tr("<font color='green'>Valid place</font>") :
+                    tr("<font color='red'>Min 3 characters. "
+                       "Only letters and numbers</font>"));
+
+    this->updateSaveButtonState();
+}
+
+void DialogCreateRace::on_doubleSpinBoxDistance_valueChanged(double distance)
+{
+    this->_validDistance = distance > 0.0;
+    this->updateSaveButtonState();
 }

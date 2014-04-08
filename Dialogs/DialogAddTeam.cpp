@@ -2,7 +2,8 @@
 #include "ui_DialogAddTeam.h"
 
 DialogAddTeam::DialogAddTeam(QWidget *parent) :
-    QDialog(parent), ui(new Ui::DialogAddTeam), _regex("^[a-zA-Z0-9 ]{3,80}$"),
+    QDialog(parent), ui(new Ui::DialogAddTeam),
+    _regex("^[a-zA-Z0-9àáâãäåçèéêëìíîïðòóôõöùúûüýÿ ]{3,80}$"),
     _validTeamName(false), _validCuistaxNumber(false)
 {
     // GUI Configuration

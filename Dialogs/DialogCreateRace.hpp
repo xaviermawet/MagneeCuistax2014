@@ -44,7 +44,9 @@ class DialogCreateRace : public QDialog
     private slots:
 
         // Autoconnect
-        void on_lineEditName_textEdited(const QString& raceName);
+        void on_lineEditName_textEdited(QString const& raceName);
+        void on_lineEditPlace_textEdited(QString const& racePlace);
+        void on_doubleSpinBoxDistance_valueChanged(double distance);
 
     private:
 
