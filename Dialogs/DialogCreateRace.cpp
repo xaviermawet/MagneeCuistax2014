@@ -17,6 +17,26 @@ DialogCreateRace::~DialogCreateRace(void)
     delete this->ui;
 }
 
+QString DialogCreateRace::raceName(void) const
+{
+    return this->ui->lineEditName->text();
+}
+
+QDate DialogCreateRace::raceDate(void) const
+{
+    return this->ui->calendarWidgetDateRace->selectedDate();
+}
+
+QString DialogCreateRace::racePlace(void) const
+{
+    return this->ui->lineEditPlace->text();
+}
+
+double DialogCreateRace::raceDistance(void) const
+{
+    return this->ui->doubleSpinBoxDistance->value();
+}
+
 void DialogCreateRace::updateSaveButtonState(void)
 {
     this->ui->buttonBox->setStandardButtons(

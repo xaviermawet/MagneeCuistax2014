@@ -33,6 +33,11 @@ class DialogCreateRace : public QDialog
          */
         virtual ~DialogCreateRace(void);
 
+        QString raceName(void) const;
+        QDate   raceDate(void) const;
+        QString racePlace(void) const;
+        double  raceDistance(void) const;
+
     protected:
 
         /*!

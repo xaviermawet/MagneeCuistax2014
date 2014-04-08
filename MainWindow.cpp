@@ -190,7 +190,24 @@ void MainWindow::on_actionCreateRace_triggered(void)
         return;
 
     // Insert new race in database
-    // TODO
+    QSqlQuery insertQuery("INSERT INTO RACE (name, date, place, distance) "
+                          "VALUES (?, ? , ?, ?)");
+    insertQuery.addBindValue(dial.raceName());
+    insertQuery.addBindValue(dial.raceDate());
+    insertQuery.addBindValue(dial.racePlace());
+    insertQuery.addBindValue(dial.raceDistance());
+
+    try
+    {
+        DataBaseManager::execTransaction(insertQuery);
+        this->statusBar()->showMessage(
+                    tr("Race \"") + dial.raceName() + tr("\" created"), 4000);
+    }
+    catch(NException const& exception)
+    {
+        QMessageBox::warning(this, tr("Enable to create race ")
+                             + dial.raceName(), exception.what());
+    }
 }
 
 void MainWindow::on_pushButtonDelete_clicked(void)
