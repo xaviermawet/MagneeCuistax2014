@@ -251,6 +251,39 @@ void MainWindow::on_actionCreateRace_triggered(void)
     }
 }
 
+void MainWindow::on_actionDeleteRace_triggered(void)
+{
+    // Stop if there is no race selected
+    if (!this->_comboBoxRaceList ||
+            this->_comboBoxRaceList->currentIndex() < 0)
+        return;
+
+    // Get race name
+    QString raceName = this->_comboBoxRaceList->currentText();
+
+    // Delete race from database
+    QSqlQuery deleteQuery("DELETE FROM RACE WHERE name LIKE ?");
+    deleteQuery.addBindValue(raceName);
+
+    try
+    {
+        DataBaseManager::execTransaction(deleteQuery);
+        this->statusBar()->showMessage(
+                    tr("Race \"") + raceName + tr("\" deleted"), 4000);
+
+        this->_raceListModel->refresh();
+
+        // TODO : revenir à un index
+        this->_comboBoxRaceList->setCurrentIndex(0);
+
+    }
+    catch(NException const& exception)
+    {
+        QMessageBox::warning(this, tr("Enable to delete race ") + raceName,
+                             exception.what());
+    }
+}
+
 void MainWindow::on_pushButtonDelete_clicked(void)
 {
     QItemSelectionModel* select = this->ui->tableViewTeamList->selectionModel();

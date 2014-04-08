@@ -99,6 +99,7 @@
      <string>&amp;Race</string>
     </property>
     <addaction name="actionCreateRace"/>
+    <addaction name="actionDeleteRace"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTeams"/>
@@ -121,6 +122,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="actionCreateRace"/>
+   <addaction name="actionDeleteRace"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionQuit">
@@ -169,6 +171,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionDeleteRace">
+   <property name="icon">
+    <iconset resource="Resources.qrc">
+     <normaloff>:/Icons/remove</normaloff>:/Icons/remove</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Delete the current race</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete the current race</string>
+   </property>
+   <property name="shortcut">
+    <string>Meta+Shift+R</string>
    </property>
   </action>
  </widget>
