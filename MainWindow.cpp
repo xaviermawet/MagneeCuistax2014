@@ -211,3 +211,11 @@ void MainWindow::on_pushButtonDelete_clicked(void)
                              exception.what());
     }
 }
+
+void MainWindow::on_tableViewTeamList_activated(const QModelIndex &index)
+{
+    Q_UNUSED(index)
+
+    QItemSelectionModel* select = this->ui->tableViewTeamList->selectionModel();
+    qDebug() << "Ajouter un tour au cuistax : " << select->selectedRows().first().data().toString();
+}

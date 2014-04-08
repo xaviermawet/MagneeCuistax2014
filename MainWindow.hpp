@@ -88,6 +88,7 @@ class MainWindow : public QMainWindow
         void on_actionNewProject_triggered(void);
         void on_actionCreateTeam_triggered(void);
         void on_pushButtonDelete_clicked(void);
+        void on_tableViewTeamList_activated(const QModelIndex &index);
 
     protected:
 
