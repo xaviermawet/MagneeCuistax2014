@@ -2,4 +2,9 @@
     <qresource prefix="/sql">
         <file alias="schemaTables">Resources/SQL/MagneeCuistax.sql</file>
     </qresource>
+    <qresource prefix="/Icons">
+        <file alias="add">Resources/Icons/Add.png</file>
+        <file alias="remove">Resources/Icons/Remove.png</file>
+        <file alias="stopwatch">Resources/Icons/Stopwatch.png</file>
+    </qresource>
 </RCC>
