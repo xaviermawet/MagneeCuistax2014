@@ -9,6 +9,9 @@
     #include <QtGui>
 #endif
 
+#include "Utils/NException.hpp"
+#include "DataBase/DataBaseManager.hpp"
+
 namespace Ui {
     class DialogCreateRace;
 }
@@ -30,9 +33,27 @@ class DialogCreateRace : public QDialog
          */
         virtual ~DialogCreateRace(void);
 
+    protected:
+
+        /*!
+         * \brief updateSaveButtonState : Hide or shows the save button if
+         * the name, the place and the distance are all valid
+         */
+        void updateSaveButtonState(void);
+
+    private slots:
+
+        // Autoconnect
+        void on_lineEditName_textEdited(const QString& raceName);
+
     private:
 
         Ui::DialogCreateRace* ui;
+
+        QRegExp _regex;
+        bool    _validName;
+        bool    _validPlace;
+        bool    _validDistance;
 };
 
 #endif /* __DIALOGCREATERACE_HPP__ */

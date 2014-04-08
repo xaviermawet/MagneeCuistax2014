@@ -27,7 +27,7 @@ QString DialogAddTeam::teamName(void) const
 void DialogAddTeam::updateSaveButtonState(void)
 {
     this->ui->buttonBox->setStandardButtons(
-                (this->_validTeamName && _validCuistaxNumber) ?
+                (this->_validTeamName && this->_validCuistaxNumber) ?
                     QDialogButtonBox::Cancel | QDialogButtonBox::Save :
                     QDialogButtonBox::Cancel);
 }
@@ -40,7 +40,7 @@ void DialogAddTeam::on_lineEditTeamName_textEdited(QString const& teamName)
         if (!this->_regex.exactMatch(teamName))
             throw NException(tr("Min 3 characters. Only letters and numbers"));
 
-        // Check if a team with the same name already exists
+        // Checks if a team with the same name already exists
         QVariantList param; param << teamName;
 
         QSqlQuery query = DataBaseManager::execQuery(
@@ -51,7 +51,7 @@ void DialogAddTeam::on_lineEditTeamName_textEdited(QString const& teamName)
 
         // Check if the name already exists
         if (query.value(0).toInt() != 0)
-            throw NException(tr("Team name already exists"));
+            throw NException(tr("A team with the same name already exists"));
 
         this->_validTeamName = true;
         this->ui->labelTeamNameInformation->setText(
