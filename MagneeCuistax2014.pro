@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     DataBase/SqlTableModelIdNotEditable.cpp \
     Dialogs/DialogCreateRace.cpp \
     DataBase/NSqlQueryModel.cpp \
-    Frames/NStopWatch.cpp
+    Frames/NStopWatch.cpp \
+    DataBase/Lap.cpp
 
 HEADERS  += MainWindow.hpp \
     Utils/NException.hpp \
@@ -29,7 +30,8 @@ HEADERS  += MainWindow.hpp \
     DataBase/SqlTableModelIdNotEditable.hpp \
     Dialogs/DialogCreateRace.hpp \
     DataBase/NSqlQueryModel.hpp \
-    Frames/NStopWatch.hpp
+    Frames/NStopWatch.hpp \
+    DataBase/Lap.hpp
 
 FORMS    += MainWindow.ui \
     Dialogs/DialogAddTeam.ui \
