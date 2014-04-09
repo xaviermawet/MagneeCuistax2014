@@ -28,6 +28,11 @@ QTime NStopWatch::elapsedTime(void) const
         return QTime(0, 0, 0, 0).addMSecs(this->_watchTime.elapsed());
 }
 
+bool NStopWatch::isActive(void) const
+{
+    return !this->_pause;
+}
+
 void NStopWatch::start(void)
 {
     if (!this->_refreshTimer->isActive())
@@ -38,18 +43,23 @@ void NStopWatch::start(void)
         this->_watchTime =
             this->_watchTime.addMSecs(this->_startingPauseTime.restart());
     else
+    {
         this->_watchTime.start();
+        emit this->started();
+    }
 
     this->_pause = false;
     this->refreshWatch();
 
     this->ui->pushButtonStart->setText(tr("Restart"));
-
-    emit this->started();
 }
 
 void NStopWatch::stop(void)
 {
+    // Nothing to do if already stopped
+    if(this->_pause)
+        return;
+
     // Save time at the beginning of the pause
     this->_startingPauseTime.start();
     this->_pause = true;
