@@ -47,9 +47,14 @@ class MainWindow : public QMainWindow
     protected:
 
         /*!
-         * \brief createTeamView : create a team view model based on TEAM table
+         * \brief createTeamListModel : create a team list model based on TEAM table
          */
-        void createTeamView(void);
+        void createTeamListModel(void);
+
+        /*!
+         * \brief createRaceListModel : create a race list model based on RACE table
+         */
+        void createRaceListModel(void);
 
         /*!
          * \brief createToolBar : create widget for toolbar
@@ -87,6 +92,22 @@ class MainWindow : public QMainWindow
          * \brief closeEvent : overloaded method for writing settings
          */
         virtual void closeEvent(QCloseEvent* event);
+
+        /*!
+         * \brief updateDataBaseActionsVisibility : Hides or shows all actions
+         * and menus that interact with the database
+         * \param visible : the visibility
+         */
+        void updateDataBaseActionsVisibility(bool visible);
+
+        /*!
+         * \brief updateDataBase : update all the models and widgets based on
+         *                         the database
+         * \param dbFilePath : path to the database file (project file)
+         * \return true if action succeed. Otherwise false.
+         */
+        bool updateDataBase(QString const& dbFilePath,
+                           bool(*dataBaseAction)(QString const&));
 
     private slots:
 

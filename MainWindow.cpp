@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget* parent) :
 
     // GUI Configuration
     this->ui->setupUi(this);
+    this->createToolBar();
 
     // Restore previous MainWindows layout settings
     this->readSettings();
@@ -28,15 +29,14 @@ MainWindow::MainWindow(QWidget* parent) :
     // Connect to previous database if exists
     if (DataBaseManager::restorePreviousDataBase())
     {
+        this->createTeamListModel();
+        this->createRaceListModel();
+
         this->ui->statusBar->showMessage(
                 tr("Latest project automatically loaded"), 4000);
-
-        // Create team list model
-        this->createTeamView();
-
-        // Create combobox race list
-        this->createToolBar();
     }
+    else
+        this->updateDataBaseActionsVisibility(false);
 }
 
 MainWindow::~MainWindow(void)
@@ -50,7 +50,7 @@ MainWindow::~MainWindow(void)
     delete this->_comboBoxRaceList;
 }
 
-void MainWindow::createTeamView(void)
+void MainWindow::createTeamListModel(void)
 {
     if (this->_teamListModel != NULL)
         delete this->_teamListModel;
@@ -63,12 +63,11 @@ void MainWindow::createTeamView(void)
     this->_teamListModel->select();
 }
 
-void MainWindow::createToolBar(void)
+void MainWindow::createRaceListModel(void)
 {
-    // Mainly developed with Qt Designer
-
-    if(this->_comboBoxRaceList != NULL)
-        delete this->_comboBoxRaceList;
+    // Stop if the combobox (container) doesn't exist
+    if (!this->_comboBoxRaceList)
+        return;
 
     if (this->_raceListModel != NULL)
         delete this->_raceListModel;
@@ -76,10 +75,23 @@ void MainWindow::createToolBar(void)
     // Create model
     this->_raceListModel = new NSqlQueryModel(this);
 
-    // Create comboBox based on raceListModel
+    // Apply the new model to the combobox
+    this->_comboBoxRaceList->setModel(this->_raceListModel);
+
+    // Populates the model
+    this->_raceListModel->setQuery("SELECT name, id FROM RACE");
+}
+
+void MainWindow::createToolBar(void)
+{
+    // Mainly developed with Qt Designer
+
+    if(this->_comboBoxRaceList != NULL)
+        delete this->_comboBoxRaceList;
+
+    // Create comboBox
     this->_comboBoxRaceList = new QComboBox();
     this->_comboBoxRaceList->setEditable(false);
-    this->_comboBoxRaceList->setModel(this->_raceListModel);
     this->_comboBoxRaceList->setSizePolicy(QSizePolicy::Expanding,
                                            QSizePolicy::Maximum);
 
@@ -88,9 +100,6 @@ void MainWindow::createToolBar(void)
 
     connect(this->_comboBoxRaceList, SIGNAL(currentIndexChanged(int)),
             this, SLOT(updateRaceID(int)));
-
-    // Populates the model
-    this->_raceListModel->setQuery("SELECT name, id FROM RACE");
 }
 
 void MainWindow::centerOnScreen(void)
@@ -156,6 +165,62 @@ void MainWindow::closeEvent(QCloseEvent* event)
     QMainWindow::closeEvent(event);
 }
 
+void MainWindow::updateDataBaseActionsVisibility(bool visible)
+{
+    // Menus
+    this->ui->menuTeams->menuAction()->setVisible(visible);
+    this->ui->menuRace->menuAction()->setVisible(visible);
+
+    // Actions
+    this->ui->actionCreateRace->setVisible(visible);
+    this->ui->actionDeleteRace->setVisible(visible);
+
+    // enable/disable action shortcut
+    this->ui->actionCreateTeam->blockSignals(!visible);
+    this->ui->actionDeleteTeam->blockSignals(!visible);
+    this->ui->actionCreateRace->blockSignals(!visible);
+    this->ui->actionDeleteRace->blockSignals(!visible);
+
+    // Buttons
+    this->ui->pushButtonCreateTeam->setVisible(visible);
+    this->ui->pushButtonDeleteTeam->setVisible(visible);
+}
+
+bool MainWindow::updateDataBase(const QString &dbFilePath,
+                                bool (*dataBaseAction)(const QString &))
+{
+    /* ---------------------------------------------------------------------- *
+     *                 Delete all sql models based on table(s)                *
+     * ---------------------------------------------------------------------- */
+    delete this->_teamListModel;
+    this->_teamListModel = NULL;
+
+    delete this->_raceListModel;
+    this->_raceListModel = NULL;
+
+    /* ---------------------------------------------------------------------- *
+     *                           Action on data base                          *
+     * ---------------------------------------------------------------------- */
+    bool actionSucceed = (*dataBaseAction)(dbFilePath);
+
+    // Hide or show 'Race' and 'Team' menu if action succeed or not
+    this->updateDataBaseActionsVisibility(actionSucceed);
+
+    // if action failed. Nothing else to do. return false
+    if (!actionSucceed)
+        return false;
+
+    // Otherwise, display project file path to window title
+    QFileInfo dbFile(QSqlDatabase::database().databaseName());
+    this->setWindowTitle(tr("Cuistax lap counter - ") + dbFile.baseName());
+
+    // Create models based on the database
+    this->createTeamListModel();
+    this->createRaceListModel();
+
+    return true;
+}
+
 void MainWindow::on_actionQuit_triggered(void)
 {
     // Save the state of the MainWindow and its widgets
@@ -171,17 +236,13 @@ void MainWindow::on_actionNewProject_triggered(void)
                 this, tr("Create new project file"), QDir::homePath(),
                 tr("Projet Magnee Cuistax (*.db)"));
 
-    // User canceled (nothing to save)
-    if(dbFilePath.isEmpty())
-    {
-        this->ui->statusBar->showMessage(tr("Action canceled"), 4000);
+    if(dbFilePath.isEmpty()) // User canceled (nothing to save)
         return;
-    }
 
     try
     {
         // Create database
-        if(DataBaseManager::createDataBase(dbFilePath))
+        if (this->updateDataBase(dbFilePath, DataBaseManager::createDataBase))
             this->statusBar()->showMessage(
                     tr("Project successfully created"), 4000);
         else
