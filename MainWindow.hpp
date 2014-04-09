@@ -90,27 +90,32 @@ class MainWindow : public QMainWindow
 
     private slots:
 
-        // Autoconnect
+        // File menu
         void on_actionQuit_triggered(void);
         void on_actionNewProject_triggered(void);
 
+        // Team Management
         void on_actionCreateTeam_triggered(void);
         void on_actionDeleteTeam_triggered(void);
+        void on_tableViewTeamList_activated(const QModelIndex &index);
 
+        // Race Management
         void on_actionCreateRace_triggered(void);
         void on_actionDeleteRace_triggered(void);
-
-        void on_tableViewTeamList_activated(const QModelIndex &index);
+        void updateRaceID(int currentRaceIndex);
 
     protected:
 
+        // Widgets
         Ui::MainWindow* ui;
-
         QComboBox* _comboBoxRaceList;
 
         // Models
         SqlTableModelIdNotEditable* _teamListModel;
         NSqlQueryModel* _raceListModel;
+
+        // Race
+        int _currentRaceID;
 };
 
 #endif /* __MAINWINDOW_HPP__ */

@@ -3,7 +3,8 @@
 
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent), ui(new Ui::MainWindow),
-    _comboBoxRaceList(NULL), _teamListModel(NULL), _raceListModel(NULL)
+    _comboBoxRaceList(NULL), _teamListModel(NULL), _raceListModel(NULL),
+    _currentRaceID(-1)
 {
     /* The value is used by the QSettings class when it is constructed using
      * the empty constructor. This saves having to repeat this information each
@@ -74,7 +75,6 @@ void MainWindow::createToolBar(void)
 
     // Create model
     this->_raceListModel = new NSqlQueryModel(this);
-    this->_raceListModel->setQuery("SELECT name FROM RACE");
 
     // Create comboBox based on raceListModel
     this->_comboBoxRaceList = new QComboBox();
@@ -86,7 +86,11 @@ void MainWindow::createToolBar(void)
     // Add the comboBox to the toolBar of the MainWindow
     this->ui->mainToolBar->addWidget(this->_comboBoxRaceList);
 
-    // TODO : connecter le signal currentIndexChanged
+    connect(this->_comboBoxRaceList, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(updateRaceID(int)));
+
+    // Populates the model
+    this->_raceListModel->setQuery("SELECT name, id FROM RACE");
 }
 
 void MainWindow::centerOnScreen(void)
@@ -248,6 +252,14 @@ void MainWindow::on_actionDeleteTeam_triggered(void)
     }
 }
 
+void MainWindow::on_tableViewTeamList_activated(const QModelIndex &index)
+{
+    Q_UNUSED(index)
+
+    QItemSelectionModel* select = this->ui->tableViewTeamList->selectionModel();
+    qDebug() << "Ajouter un tour au cuistax : " << select->selectedRows().first().data().toString();
+}
+
 void MainWindow::on_actionCreateRace_triggered(void)
 {
     DialogCreateRace dial;
@@ -270,9 +282,6 @@ void MainWindow::on_actionCreateRace_triggered(void)
                     tr("Race \"") + dial.raceName() + tr("\" created"), 4000);
 
         this->_raceListModel->refresh();
-
-        // TODO : revenir à un index
-        this->_comboBoxRaceList->setCurrentIndex(0);
     }
     catch(NException const& exception)
     {
@@ -302,10 +311,6 @@ void MainWindow::on_actionDeleteRace_triggered(void)
                     tr("Race \"") + raceName + tr("\" deleted"), 4000);
 
         this->_raceListModel->refresh();
-
-        // TODO : revenir à un index
-        this->_comboBoxRaceList->setCurrentIndex(0);
-
     }
     catch(NException const& exception)
     {
@@ -314,10 +319,10 @@ void MainWindow::on_actionDeleteRace_triggered(void)
     }
 }
 
-void MainWindow::on_tableViewTeamList_activated(const QModelIndex &index)
+void MainWindow::updateRaceID(int currentRaceIndex)
 {
-    Q_UNUSED(index)
+    this->_currentRaceID =
+            this->_raceListModel->index(currentRaceIndex, 1).data().toInt();
 
-    QItemSelectionModel* select = this->ui->tableViewTeamList->selectionModel();
-    qDebug() << "Ajouter un tour au cuistax : " << select->selectedRows().first().data().toString();
+    qDebug() << "Mise à jour de l'id de la course = " << this->_currentRaceID;
 }
