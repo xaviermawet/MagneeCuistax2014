@@ -410,6 +410,15 @@ void MainWindow::on_tableViewTeamList_activated(const QModelIndex &index)
     try
     {
         DataBaseManager::execTransaction(insertQuery);
+
+        // Populate the lap list table
+        QVariantList params;
+        params << cuistaxNumber
+               << select->selectedRows(1).first().data()
+               << lap.lapNumber()
+               << currentLapTime.toString("mm:ss:zzz");
+        this->ui->tableWidgetLapList->insertRowItems(0, params);
+
     }
     catch(NException const& exception)
     {
