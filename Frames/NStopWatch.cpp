@@ -57,7 +57,7 @@ void NStopWatch::start(void)
 void NStopWatch::stop(void)
 {
     // Nothing to do if already stopped
-    if(this->_pause)
+    if (!this->_refreshTimer->isActive())
         return;
 
     // Save time at the beginning of the pause
