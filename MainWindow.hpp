@@ -20,7 +20,7 @@
 #include "Dialogs/DialogCreateRace.hpp"
 
 // Frames
-#include "Frames/NStopWatch.hpp"
+#include "Widgets/NStopWatch.hpp"
 
 #define QSETTINGS_MAINWINDOW_KEYWORD "MainWindow"
 
