@@ -18,6 +18,9 @@
 #include "Dialogs/DialogAddTeam.hpp"
 #include "Dialogs/DialogCreateRace.hpp"
 
+// Frames
+#include "Frames/NStopWatch.hpp"
+
 #define QSETTINGS_MAINWINDOW_KEYWORD "MainWindow"
 
 namespace Ui {
@@ -60,6 +63,12 @@ class MainWindow : public QMainWindow
          * \brief createToolBar : create widget for toolbar
          */
         void createToolBar(void);
+
+        /*!
+         * \brief createStopWatch : create the stopwatch widget and insert it
+         * in a layout in the MainWindow
+         */
+        void createStopWatch(void);
 
         /*!
          * \brief centerOnScreen : center the MainWindow
@@ -125,12 +134,16 @@ class MainWindow : public QMainWindow
         void on_actionCreateRace_triggered(void);
         void on_actionDeleteRace_triggered(void);
         void updateRaceID(int currentRaceIndex);
+        void raceStarted(void);
 
     protected:
 
         // Widgets
         Ui::MainWindow* ui;
         QComboBox* _comboBoxRaceList;
+
+        // Frames
+        NStopWatch* _stopWatch;
 
         // Models
         SqlTableModelIdNotEditable* _teamListModel;

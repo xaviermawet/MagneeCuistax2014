@@ -3,8 +3,8 @@
 
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent), ui(new Ui::MainWindow),
-    _comboBoxRaceList(NULL), _teamListModel(NULL), _raceListModel(NULL),
-    _currentRaceID(-1)
+    _comboBoxRaceList(NULL), _stopWatch(NULL),
+    _teamListModel(NULL), _raceListModel(NULL), _currentRaceID(-1)
 {
     /* The value is used by the QSettings class when it is constructed using
      * the empty constructor. This saves having to repeat this information each
@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget* parent) :
     // GUI Configuration
     this->ui->setupUi(this);
     this->createToolBar();
+    this->createStopWatch();
 
     // Restore previous MainWindows layout settings
     this->readSettings();
@@ -41,13 +42,16 @@ MainWindow::MainWindow(QWidget* parent) :
 
 MainWindow::~MainWindow(void)
 {
+    // Widgets
     delete this->ui;
+    delete this->_comboBoxRaceList;
+
+    // Frames
+    delete this->_stopWatch;
 
     // Models
     delete this->_teamListModel;
     delete this->_raceListModel;
-
-    delete this->_comboBoxRaceList;
 }
 
 void MainWindow::createTeamListModel(void)
@@ -100,6 +104,13 @@ void MainWindow::createToolBar(void)
 
     connect(this->_comboBoxRaceList, SIGNAL(currentIndexChanged(int)),
             this, SLOT(updateRaceID(int)));
+}
+
+void MainWindow::createStopWatch(void)
+{
+    this->_stopWatch = new NStopWatch(this);
+    this->ui->mainToolBar->addWidget(this->_stopWatch);
+    connect(this->_stopWatch, SIGNAL(started()), this, SLOT(raceStarted()));
 }
 
 void MainWindow::centerOnScreen(void)
@@ -413,4 +424,9 @@ void MainWindow::updateRaceID(int currentRaceIndex)
             this->_raceListModel->index(currentRaceIndex, 1).data().toInt();
 
     qDebug() << "Mise à jour de l'id de la course = " << this->_currentRaceID;
+}
+
+void MainWindow::raceStarted(void)
+{
+    qDebug() << "TODO : race started ...";
 }
