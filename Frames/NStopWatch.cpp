@@ -30,7 +30,7 @@ QTime NStopWatch::elapsedTime(void) const
 
 bool NStopWatch::isActive(void) const
 {
-    return !this->_pause;
+    return this->_refreshTimer->isActive();
 }
 
 void NStopWatch::start(void)

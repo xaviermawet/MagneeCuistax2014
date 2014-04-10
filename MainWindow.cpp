@@ -163,6 +163,8 @@ void MainWindow::readLayoutSettings(const QString& settingsGroup)
     settings.beginGroup(settingsGroup);
 
     this->restoreGeometry(settings.value("geometry").toByteArray());
+    this->ui->mainSplitter->restoreState(
+                settings.value("mainSplitter").toByteArray());
 
     // Other MainWindow Settings ...
 
@@ -177,6 +179,7 @@ void MainWindow::writeLayoutSettings(const QString& settingsGroup) const
 
     //settings.setValue("isMaximized",this->isMaximized());
     settings.setValue("geometry", this->saveGeometry());
+    settings.setValue("mainSplitter", this->ui->mainSplitter->saveState());
 
     // Other MainWindow Settings ...
 
@@ -370,8 +373,18 @@ void MainWindow::on_tableViewTeamList_activated(const QModelIndex &index)
 {
     Q_UNUSED(index)
 
+    if (!this->_stopWatch->isActive())
+        return;
+
+    qDebug() << "En course = " <<  this->_stopWatch->isActive();
+
     QItemSelectionModel* select = this->ui->tableViewTeamList->selectionModel();
-    qDebug() << "Ajouter un tour au cuistax : " << select->selectedRows().first().data().toString();
+    int cuistaxNumber = select->selectedRows().first().data().toInt();
+
+    qDebug() << "lap = " << "???"
+             << " time = " << "???"
+             << " race = " << this->_currentRaceID
+             << " cuistax = " << cuistaxNumber;
 }
 
 void MainWindow::on_actionCreateRace_triggered(void)
