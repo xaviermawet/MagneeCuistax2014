@@ -32,6 +32,10 @@ MainWindow::MainWindow(QWidget* parent) :
         this->createTeamListModel();
         this->createRaceListModel();
 
+        // Display project file path in the main window title
+        QFileInfo dbFile(QSqlDatabase::database().databaseName());
+        this->setWindowTitle(tr("Cuistax lap counter - ") + dbFile.baseName());
+
         this->ui->statusBar->showMessage(
                 tr("Latest project automatically loaded"), 4000);
     }
@@ -239,7 +243,7 @@ bool MainWindow::updateDataBase(const QString &dbFilePath,
     if (!actionSucceed)
         return false;
 
-    // Otherwise, display project file path to window title
+    // Otherwise, display project file path in the main window title
     QFileInfo dbFile(QSqlDatabase::database().databaseName());
     this->setWindowTitle(tr("Cuistax lap counter - ") + dbFile.baseName());
 
