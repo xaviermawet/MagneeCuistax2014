@@ -3,13 +3,7 @@
  <class>NStopWatch</class>
  <widget class="QFrame" name="NStopWatch">
   <layout class="QHBoxLayout" name="mainHorizontalLayout">
-   <property name="leftMargin">
-    <number>0</number>
-   </property>
    <property name="topMargin">
-    <number>0</number>
-   </property>
-   <property name="rightMargin">
     <number>0</number>
    </property>
    <property name="bottomMargin">
