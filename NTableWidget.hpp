@@ -15,6 +15,8 @@ class NTableWidget : public QTableWidget
 
     public:
 
+        enum RowMaxOption {InfinityRows = -1};
+
         /*!
          * \brief NTableWidget : default constructor
          * \param parent : pointer to a parent widget if exists
@@ -23,10 +25,16 @@ class NTableWidget : public QTableWidget
 
         void insertRowItems(int row, QVariantList const& items);
 
+        void setMaxRow(int maxRowCount = NTableWidget::InfinityRows);
+        int maxRow(void) const;
+
     signals:
 
     public slots:
 
+    protected:
+
+        int _maxRow;
 };
 
 #endif /* __NTABLEWIDGET_HPP__ */
