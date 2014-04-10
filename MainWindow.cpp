@@ -87,6 +87,10 @@ void MainWindow::createRaceListModel(void)
 
     // Populates the model
     this->_raceListModel->setQuery("SELECT name, id FROM RACE");
+
+#if (QT_VERSION > QT_VERSION_CHECK(5, 0, 0))
+    this->_comboBoxRaceList->setCurrentIndex(0);
+#endif
 }
 
 void MainWindow::createToolBar(void)
@@ -149,7 +153,10 @@ void MainWindow::readSettings(void)
     // Restore MainWindow settings
     this->readLayoutSettings(QSETTINGS_MAINWINDOW_KEYWORD);
 
-    // Other settings to restore...
+    // Get the number of rows for the lap list
+    QSettings settings;
+    this->ui->tableWidgetLapList->setMaxRow(
+                settings.value("LapListRows", 20).toInt());
 }
 
 void MainWindow::writeSettings(void) const
@@ -157,7 +164,9 @@ void MainWindow::writeSettings(void) const
     // Save MainWindow settings
     this->writeLayoutSettings(QSETTINGS_MAINWINDOW_KEYWORD);
 
-    // Other settings to save...
+    // Save the number of rows for the lap list
+    QSettings settings;
+    settings.setValue("LapListRows", this->ui->tableWidgetLapList->maxRow());
 }
 
 void MainWindow::readLayoutSettings(const QString& settingsGroup)
