@@ -130,7 +130,7 @@ class MainWindow : public QMainWindow
         // Race Management
         void on_actionCreateRace_triggered(void);
         void on_actionDeleteRace_triggered(void);
-        void updateRaceID(int currentRaceIndex);
+        void updateLapListTableContent(int currentRaceIndex);
         void raceStarted(void);
 
     protected:

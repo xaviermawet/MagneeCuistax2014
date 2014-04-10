@@ -112,9 +112,9 @@ void MainWindow::createToolBar(void)
     // Add the comboBox to the mainToolBar
     this->ui->mainToolBar->addWidget(this->_comboBoxRaceList);
 
-    // Update the current race id
+    // Update the current race id and populate the lap list table
     connect(this->_comboBoxRaceList, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(updateRaceID(int)));
+            this, SLOT(updateLapListTableContent(int)));
 
     /* ---------------------------------------------------------------------- *
      *                                Stopwatch                               *
@@ -457,6 +457,10 @@ void MainWindow::on_actionCreateRace_triggered(void)
                     tr("Race \"") + dial.raceName() + tr("\" created"), 4000);
 
         this->_raceListModel->refresh();
+
+        // Show the newly created race in combobox
+        this->_comboBoxRaceList->setCurrentIndex(
+                    this->_comboBoxRaceList->count() - 1);
     }
     catch(NException const& exception)
     {
@@ -473,7 +477,8 @@ void MainWindow::on_actionDeleteRace_triggered(void)
         return;
 
     // Get race name
-    QString raceName = this->_comboBoxRaceList->currentText();
+    QString raceName  = this->_comboBoxRaceList->currentText();
+    int comboBoxIndex = this->_comboBoxRaceList->currentIndex();
 
     // Delete race from database
     QSqlQuery deleteQuery("DELETE FROM RACE WHERE name LIKE ?");
@@ -486,6 +491,11 @@ void MainWindow::on_actionDeleteRace_triggered(void)
                     tr("Race \"") + raceName + tr("\" deleted"), 4000);
 
         this->_raceListModel->refresh();
+
+        // Show the previous race in combobox (if exists)
+        if (comboBoxIndex > 0)
+            --comboBoxIndex;
+        this->_comboBoxRaceList->setCurrentIndex(comboBoxIndex);
     }
     catch(NException const& exception)
     {
@@ -494,12 +504,43 @@ void MainWindow::on_actionDeleteRace_triggered(void)
     }
 }
 
-void MainWindow::updateRaceID(int currentRaceIndex)
+void MainWindow::updateLapListTableContent(int currentRaceIndex)
 {
+    if (currentRaceIndex < 0) // No row selected in the combobox
+        return;
+
     this->_currentRaceID =
             this->_raceListModel->index(currentRaceIndex, 1).data().toInt();
 
-    qDebug() << "Mise à jour de l'id de la course = " << this->_currentRaceID;
+    qDebug() << "Mise à jour du race id (" << this->_currentRaceID << ") et du tableau lap ...";
+
+    // clear lap list table
+    this->ui->tableWidgetLapList->clearContents();
+    this->ui->tableWidgetLapList->setRowCount(0);
+
+    // Populate the lap table with previous lap information
+    QVariantList param;
+    param << this->_currentRaceID
+          << this->ui->tableWidgetLapList->maxRow();
+
+    QSqlQuery lapQuery = DataBaseManager::execQuery(
+                "SELECT TEAM.num_cuistax, TEAM.name, LAP.num, LAP.end_time "
+                "FROM LAP, TEAM "
+                "WHERE LAP.ref_team = TEAM.num_cuistax "
+                "AND LAP.ref_race = ? "
+                "ORDER BY LAP.ROWID DESC LIMIT ?", param);
+
+    while (lapQuery.next())
+    {
+        QVariantList row;
+        row << lapQuery.value(0)
+            << lapQuery.value(1)
+            << lapQuery.value(2)
+            << lapQuery.value(3).toTime().toString("mm:ss:zzz");
+
+        this->ui->tableWidgetLapList->insertRowItems(
+                    this->ui->tableWidgetLapList->rowCount(), row);
+    }
 }
 
 void MainWindow::raceStarted(void)
