@@ -3,7 +3,7 @@ create table PERSON
     id          INTEGER PRIMARY KEY AUTOINCREMENT,  -- identifiant unique sans signification particulière
     first_name  VARCHAR(80),                        -- Prénom de la personne
     last_name   VARCHAR(80),                        -- Nom de la personne
-    age         INTEGER,                            -- Age de la personne
+    birthday    DATE,                               -- Age de la personne
 
     ref_team    INTEGER,                            -- reférence de l'équipe (numéro du cuistax)
 
@@ -24,7 +24,7 @@ create table RACE
 (
     id          INTEGER PRIMARY KEY AUTOINCREMENT,  -- identifiant unique sans signification particulière
     name        VARCHAR(80),                        -- Nom identifiant la course
-    date        DATETIME,                           -- Date à laquelle se déroule la course
+    date        DATE,                               -- Date à laquelle se déroule la course
     place       VARCHAR(80),                        -- Lieu où se déroule la course
     distance    FLOAT                               -- longueur en mètres du tracé de la course
 );
