@@ -12,7 +12,7 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayoutTeamList">
         <item>
          <widget class="QLabel" name="labelTeamList">
@@ -25,6 +25,9 @@
          <widget class="QTableView" name="tableViewTeamList">
           <property name="editTriggers">
            <set>QAbstractItemView::DoubleClicked</set>
+          </property>
+          <property name="alternatingRowColors">
+           <bool>true</bool>
           </property>
           <property name="selectionMode">
            <enum>QAbstractItemView::SingleSelection</enum>
@@ -60,7 +63,7 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <layout class="QVBoxLayout" name="verticalLayoutLapList">
         <item>
          <widget class="QLabel" name="labelLapList">
@@ -70,7 +73,40 @@
          </widget>
         </item>
         <item>
-         <widget class="QTableWidget" name="tableWidgetLapList"/>
+         <widget class="NTableWidget" name="tableWidgetLapList">
+          <property name="alternatingRowColors">
+           <bool>true</bool>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Cuistax number</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Team name</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Lap</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Time</string>
+           </property>
+          </column>
+         </widget>
         </item>
        </layout>
       </widget>
@@ -221,6 +257,13 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>NTableWidget</class>
+   <extends>QTableWidget</extends>
+   <header location="global">NTableWidget.hpp</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="Resources.qrc"/>
  </resources>
