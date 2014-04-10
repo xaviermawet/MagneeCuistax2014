@@ -60,15 +60,9 @@ class MainWindow : public QMainWindow
         void createRaceListModel(void);
 
         /*!
-         * \brief createToolBar : create widget for toolbar
+         * \brief createToolBar : create all the widgets for the mainToolBar
          */
         void createToolBar(void);
-
-        /*!
-         * \brief createStopWatch : create the stopwatch widget and insert it
-         * in a layout in the MainWindow
-         */
-        void createStopWatch(void);
 
         /*!
          * \brief centerOnScreen : center the MainWindow

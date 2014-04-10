@@ -22,7 +22,6 @@ MainWindow::MainWindow(QWidget* parent) :
     // GUI Configuration
     this->ui->setupUi(this);
     this->createToolBar();
-    this->createStopWatch();
 
     // Restore previous MainWindows layout settings
     this->readSettings();
@@ -90,6 +89,9 @@ void MainWindow::createToolBar(void)
 {
     // Mainly developed with Qt Designer
 
+    /* ---------------------------------------------------------------------- *
+     *                           Race list combobox                           *
+     * ---------------------------------------------------------------------- */
     if(this->_comboBoxRaceList != NULL)
         delete this->_comboBoxRaceList;
 
@@ -99,18 +101,31 @@ void MainWindow::createToolBar(void)
     this->_comboBoxRaceList->setSizePolicy(QSizePolicy::Expanding,
                                            QSizePolicy::Maximum);
 
-    // Add the comboBox to the toolBar of the MainWindow
+    // Add the comboBox to the mainToolBar
     this->ui->mainToolBar->addWidget(this->_comboBoxRaceList);
 
+    // Update the current race id
     connect(this->_comboBoxRaceList, SIGNAL(currentIndexChanged(int)),
             this, SLOT(updateRaceID(int)));
-}
 
-void MainWindow::createStopWatch(void)
-{
+    /* ---------------------------------------------------------------------- *
+     *                                Stopwatch                               *
+     * ---------------------------------------------------------------------- */
+    if (this->_stopWatch != NULL)
+        delete this->_stopWatch;
+
+    // Create stopwatch
     this->_stopWatch = new NStopWatch(this);
+
+    // Add the stopwatch to the mainToolBar
     this->ui->mainToolBar->addWidget(this->_stopWatch);
+
+    // Informs th MainWindow that the race started
     connect(this->_stopWatch, SIGNAL(started()), this, SLOT(raceStarted()));
+
+    // if the race changed, the stopwatch is stopped
+    connect(this->_comboBoxRaceList, SIGNAL(currentIndexChanged(int)),
+            this->_stopWatch, SLOT(reset()));
 }
 
 void MainWindow::centerOnScreen(void)
