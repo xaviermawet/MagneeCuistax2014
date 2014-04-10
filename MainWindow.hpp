@@ -112,8 +112,9 @@ class MainWindow : public QMainWindow
     private slots:
 
         // File menu
-        void on_actionQuit_triggered(void);
         void on_actionNewProject_triggered(void);
+        void on_actionOpenProject_triggered(void);
+        void on_actionQuit_triggered(void);
 
         // Team Management
         void on_actionCreateTeam_triggered(void);

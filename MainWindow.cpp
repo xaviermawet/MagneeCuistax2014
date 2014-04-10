@@ -221,14 +221,6 @@ bool MainWindow::updateDataBase(const QString &dbFilePath,
     return true;
 }
 
-void MainWindow::on_actionQuit_triggered(void)
-{
-    // Save the state of the MainWindow and its widgets
-    this->writeSettings();
-
-    qApp->quit();
-}
-
 void MainWindow::on_actionNewProject_triggered(void)
 {
     // Get new project file path
@@ -236,7 +228,7 @@ void MainWindow::on_actionNewProject_triggered(void)
                 this, tr("Create new project file"), QDir::homePath(),
                 tr("Projet Magnee Cuistax (*.db)"));
 
-    if(dbFilePath.isEmpty()) // User canceled (nothing to save)
+    if(dbFilePath.isEmpty()) // User canceled (nothing to do)
         return;
 
     try
@@ -254,6 +246,41 @@ void MainWindow::on_actionNewProject_triggered(void)
         QMessageBox::warning(this, tr("Enable to create project file"),
                              exception.what());
     }
+}
+
+void MainWindow::on_actionOpenProject_triggered()
+{
+    // Get existing project file path
+    QString dbFilePath = QFileDialog::getOpenFileName(
+                this, tr("Open project file"), QDir::homePath(),
+                tr("Projet Magnee Cuistax (*.db)"));
+
+    if (dbFilePath.isEmpty()) // User canceled (nothing to do)
+        return;
+
+    try
+    {
+        // Open the database
+        if (this->updateDataBase(dbFilePath, DataBaseManager::openExistingDataBase))
+            this->statusBar()->showMessage(
+                    tr("Project successfully opened"), 4000);
+        else
+            this->statusBar()->showMessage(
+                    tr("Error : project not opened"), 4000);
+    }
+    catch (NException const& exception)
+    {
+        QMessageBox::warning(this, tr("Enable to open project file"),
+                             exception.what());
+    }
+}
+
+void MainWindow::on_actionQuit_triggered(void)
+{
+    // Save the state of the MainWindow and its widgets
+    this->writeSettings();
+
+    qApp->quit();
 }
 
 void MainWindow::on_actionCreateTeam_triggered(void)
