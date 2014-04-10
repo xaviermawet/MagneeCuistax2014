@@ -376,15 +376,41 @@ void MainWindow::on_tableViewTeamList_activated(const QModelIndex &index)
     if (!this->_stopWatch->isActive())
         return;
 
-    qDebug() << "En course = " <<  this->_stopWatch->isActive();
-
+    // Get cuistax number
     QItemSelectionModel* select = this->ui->tableViewTeamList->selectionModel();
-    int cuistaxNumber = select->selectedRows().first().data().toInt();
+    int cuistaxNumber = select->selectedRows(0).first().data().toInt();
 
-    qDebug() << "lap = " << "???"
-             << " time = " << "???"
-             << " race = " << this->_currentRaceID
-             << " cuistax = " << cuistaxNumber;
+    if (!this->_previousLapsInformation.contains(cuistaxNumber))
+        return;
+
+    // Get previous lap time information
+    Lap& lap = this->_previousLapsInformation[cuistaxNumber];
+    QTime previousLapTime = lap.elapsedTime();
+
+    // update lap with the current lap information
+    lap.addLaps(1);
+    lap.setTime(this->_stopWatch->elapsedTime());
+
+    // Get time information for the current lap
+    QTime currentLapTime = QTime(0, 0).addMSecs(
+                previousLapTime.msecsTo(lap.elapsedTime()));
+
+    // Insert lap information in database
+    QSqlQuery insertQuery("INSERT INTO LAP (num, end_time, ref_race, ref_team) "
+                          "VALUES (?, ?, ?, ?)");
+    insertQuery.addBindValue(lap.lapNumber());
+    insertQuery.addBindValue(currentLapTime);
+    insertQuery.addBindValue(this->_currentRaceID);
+    insertQuery.addBindValue(cuistaxNumber);
+
+    try
+    {
+        DataBaseManager::execTransaction(insertQuery);
+    }
+    catch(NException const& exception)
+    {
+        QMessageBox::warning(this, tr("Enable to add lap"), exception.what());
+    }
 }
 
 void MainWindow::on_actionCreateRace_triggered(void)
@@ -456,5 +482,33 @@ void MainWindow::updateRaceID(int currentRaceIndex)
 
 void MainWindow::raceStarted(void)
 {
-    qDebug() << "TODO : race started ...";
+    // Delete all information about "previous laps"
+    this->_previousLapsInformation.clear();
+
+    // create lap object for each team that will save the last lap information
+    int teamCount = this->_teamListModel->rowCount();
+    for(int i(0); i < teamCount; ++i)
+        this->_previousLapsInformation[
+            this->_teamListModel->index(i, 0).data().toInt()] = Lap();
+
+    try
+    {
+        // Get the last lap number for each team for the current race  if exists
+        QVariantList param; param << this->_currentRaceID;
+        QString queryString("SELECT ref_team, MAX(num) "
+                            "FROM LAP "
+                            "WHERE ref_race = ? "
+                            "GROUP BY ref_team");
+
+        QSqlQuery query = DataBaseManager::execQuery(queryString, param);
+
+        while(query.next())
+            this->_previousLapsInformation[query.value(0).toInt()].setLapNumber(
+                    query.value(1).toInt());
+    }
+    catch(NException const& exception)
+    {
+        QMessageBox::warning(this, tr("Enable to get previous lap information"),
+                             exception.what());
+    }
 }

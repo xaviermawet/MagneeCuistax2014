@@ -13,6 +13,7 @@
 #include "DataBase/DataBaseManager.hpp"
 #include "DataBase/SqlTableModelIdNotEditable.hpp"
 #include "DataBase/NSqlQueryModel.hpp"
+#include "DataBase/Lap.hpp"
 
 // Dialogs
 #include "Dialogs/DialogAddTeam.hpp"
@@ -26,6 +27,8 @@
 namespace Ui {
     class MainWindow;
 }
+
+typedef QMap<int, Lap> LapIdentifier;
 
 /*!
  * \brief The MainWindow class
@@ -145,6 +148,7 @@ class MainWindow : public QMainWindow
 
         // Race
         int _currentRaceID;
+        LapIdentifier _previousLapsInformation;
 };
 
 #endif /* __MAINWINDOW_HPP__ */
