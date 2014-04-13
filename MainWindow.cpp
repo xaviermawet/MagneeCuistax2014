@@ -325,6 +325,17 @@ void MainWindow::on_actionQuit_triggered(void)
     qApp->quit();
 }
 
+void MainWindow::on_actionOptions_triggered(void)
+{
+    DialogSettings dial;
+
+    if (dial.exec() != QDialog::Accepted) // User canceled
+        return;
+
+    qDebug() << "Apply settings ... TODO";
+}
+
+
 void MainWindow::on_actionCreateTeam_triggered(void)
 {
     DialogAddTeam dial;

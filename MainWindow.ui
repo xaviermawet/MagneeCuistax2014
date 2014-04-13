@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>540</width>
+    <height>364</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>Magnée Cuistax 2014</string>
   </property>
@@ -68,7 +76,7 @@
         <item>
          <widget class="QLabel" name="labelLapList">
           <property name="text">
-           <string>Lap list :</string>
+           <string>Race table :</string>
           </property>
          </widget>
         </item>
@@ -146,9 +154,16 @@
     <addaction name="actionCreateRace"/>
     <addaction name="actionDeleteRace"/>
    </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="actionOptions"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTeams"/>
    <addaction name="menuRace"/>
+   <addaction name="menuTools"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="movable">
@@ -253,6 +268,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionOptions">
+   <property name="text">
+    <string>&amp;Options...</string>
+   </property>
+   <property name="toolTip">
+    <string>Open the settings dialog</string>
    </property>
   </action>
  </widget>

@@ -18,8 +18,9 @@
 // Dialogs
 #include "Dialogs/DialogAddTeam.hpp"
 #include "Dialogs/DialogCreateRace.hpp"
+#include "Dialogs/DialogSettings.hpp"
 
-// Frames
+// Personal Widgets
 #include "Widgets/NStopWatch.hpp"
 
 #define QSETTINGS_MAINWINDOW_KEYWORD "MainWindow"
@@ -121,6 +122,9 @@ class MainWindow : public QMainWindow
         void on_actionNewProject_triggered(void);
         void on_actionOpenProject_triggered(void);
         void on_actionQuit_triggered(void);
+
+        // Tools menu
+        void on_actionOptions_triggered(void);
 
         // Team Management
         void on_actionCreateTeam_triggered(void);
