@@ -390,8 +390,22 @@ void MainWindow::on_tableViewTeamList_activated(const QModelIndex &index)
 {
     Q_UNUSED(index)
 
-    if (!this->_stopWatch->isActive())
+    // If no race is selected
+    if (this->_currentRaceID <= 0)
+    {
+        QMessageBox::information(this, tr("Enable to add a lap"),
+                    tr("Before you can add a lap to a team, you have to "
+                       "select a race or create a new one"));
         return;
+    }
+
+    // If the race is stopped
+    if (!this->_stopWatch->isActive())
+    {
+        QMessageBox::information(this, tr("Enable to add a lap"),
+                    tr("the race is stopped or has simply not yet started"));
+        return;
+    }
 
     // Get cuistax number
     QItemSelectionModel* select = this->ui->tableViewTeamList->selectionModel();
@@ -476,8 +490,7 @@ void MainWindow::on_actionCreateRace_triggered(void)
 void MainWindow::on_actionDeleteRace_triggered(void)
 {
     // Stop if there is no race selected
-    if (!this->_comboBoxRaceList ||
-            this->_comboBoxRaceList->currentIndex() < 0)
+    if (this->_currentRaceID <= 0)
         return;
 
     // Get race name
@@ -511,7 +524,10 @@ void MainWindow::on_actionDeleteRace_triggered(void)
 void MainWindow::updateLapListTableContent(int currentRaceIndex)
 {
     if (currentRaceIndex < 0) // No row selected in the combobox
+    {
+        this->_currentRaceID = -1;
         return;
+    }
 
     this->_currentRaceID =
             this->_raceListModel->index(currentRaceIndex, 1).data().toInt();
