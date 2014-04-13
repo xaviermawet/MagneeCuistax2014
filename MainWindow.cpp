@@ -343,6 +343,10 @@ void MainWindow::on_actionCreateTeam_triggered(void)
         this->statusBar()->showMessage(
                     tr("Team \"") + dial.teamName() + tr("\" created"), 4000);
 
+        // If the race has already started
+        if (this->_stopWatch->isActive() || this->_stopWatch->isInPause())
+            this->_previousLapsInformation[dial.cuistaxNumber()] = Lap();
+
         this->_teamListModel->select();
     }
     catch(NException const& exception)

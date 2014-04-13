@@ -33,6 +33,11 @@ bool NStopWatch::isActive(void) const
     return this->_refreshTimer->isActive();
 }
 
+bool NStopWatch::isInPause(void) const
+{
+    return this->_pause;
+}
+
 void NStopWatch::start(void)
 {
     if (!this->_refreshTimer->isActive())

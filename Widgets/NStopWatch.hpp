@@ -25,6 +25,7 @@ class NStopWatch : public QFrame
         QTime elapsedTime(void) const;
 
         bool isActive(void) const;
+        bool isInPause(void) const;
 
     public slots:
 
