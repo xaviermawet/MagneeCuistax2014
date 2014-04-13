@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     DataBase/NSqlQueryModel.cpp \
     Widgets/NStopWatch.cpp \
     DataBase/Lap.cpp \
-    NTableWidget.cpp
+    NTableWidget.cpp \
+    Dialogs/DialogSettings.cpp
 
 HEADERS  += MainWindow.hpp \
     Utils/NException.hpp \
@@ -33,12 +34,14 @@ HEADERS  += MainWindow.hpp \
     DataBase/NSqlQueryModel.hpp \
     Widgets/NStopWatch.hpp \
     DataBase/Lap.hpp \
-    NTableWidget.hpp
+    NTableWidget.hpp \
+    Dialogs/DialogSettings.hpp
 
 FORMS    += MainWindow.ui \
     Dialogs/DialogAddTeam.ui \
     Dialogs/DialogCreateRace.ui \
-    Widgets/NStopWatch.ui
+    Widgets/NStopWatch.ui \
+    Dialogs/DialogSettings.ui
 
 RESOURCES += \
     Resources.qrc
