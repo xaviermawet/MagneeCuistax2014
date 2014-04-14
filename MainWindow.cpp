@@ -615,6 +615,9 @@ void MainWindow::on_actionDeleteSelectedLap_triggered(void)
         resetIdQuery.addBindValue(this->_currentRaceID);
         resetIdQuery.addBindValue(cuistaxNumber);
         DataBaseManager::execTransaction(resetIdQuery);
+
+        // Update the race table content
+        this->updateLapListTableContent(this->_comboBoxRaceList->currentIndex());
     }
     catch(NException const& exception)
     {
