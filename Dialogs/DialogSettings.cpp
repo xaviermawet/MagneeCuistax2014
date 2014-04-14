@@ -17,6 +17,36 @@ DialogSettings::~DialogSettings(void)
     delete this->ui;
 }
 
+void DialogSettings::setNumberOfLaps(int numberOfLaps)
+{
+    this->ui->spinBoxNumberOfLaps->setValue(numberOfLaps);
+}
+
+void DialogSettings::setReloadPreviousLaps(bool reload)
+{
+    this->ui->checkBoxReloadPreviousLaps->setChecked(reload);
+}
+
+void DialogSettings::setBackUpAndRestoreApplicationState(bool backUpAndRestore)
+{
+    this->ui->checkBoxBackUpRestoreState->setChecked(backUpAndRestore);
+}
+
+int DialogSettings::numberOfLaps(void) const
+{
+    return this->ui->spinBoxNumberOfLaps->value();
+}
+
+bool DialogSettings::isReloadPreviousLapsChecked(void) const
+{
+    return this->ui->checkBoxReloadPreviousLaps->isChecked();
+}
+
+bool DialogSettings::isBackUpAndRestoreApplicationStateChecked(void) const
+{
+    return this->ui->checkBoxBackUpRestoreState->isChecked();
+}
+
 void DialogSettings::applyChanges(QAbstractButton* buttonApply)
 {
     // Button "Apply" not pressed

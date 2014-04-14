@@ -30,6 +30,16 @@ class DialogSettings : public QDialog
          */
         virtual ~DialogSettings(void);
 
+        /* Getters */
+        void setNumberOfLaps(int numberOfLaps = 10);
+        void setReloadPreviousLaps(bool reload = true);
+        void setBackUpAndRestoreApplicationState(bool backUpAndRestore = true);
+
+        /* Setters */
+        int  numberOfLaps(void) const;
+        bool isReloadPreviousLapsChecked(void) const;
+        bool isBackUpAndRestoreApplicationStateChecked(void) const;
+
     protected slots:
 
         void applyChanges(QAbstractButton* buttonApply);
