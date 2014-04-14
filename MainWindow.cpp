@@ -3,13 +3,9 @@
 
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent), ui(new Ui::MainWindow),
-    _comboBoxRaceList(NULL), _stopWatch(NULL),
-    _teamListModel(NULL), _raceListModel(NULL), _currentRaceID(-1)
+    _comboBoxRaceList(NULL), _stopWatch(NULL), _teamListModel(NULL),
+    _raceListModel(NULL), _currentRaceID(-1), _raceTableContextMenu(NULL)
 {
-    /* The value is used by the QSettings class when it is constructed using
-     * the empty constructor. This saves having to repeat this information each
-     * time a QSettings object is created.
-     */
     QCoreApplication::setOrganizationName("N4k1m");
     QCoreApplication::setApplicationName("MagneeCuistax2014");
 
@@ -22,7 +18,7 @@ MainWindow::MainWindow(QWidget* parent) :
     // GUI Configuration
     this->ui->setupUi(this);
     this->createToolBar();
-    this->ui->tableWidgetLapList->setMaxRow(30);
+    this->createRaceTableContextMenu();
 
     // Connect to previous database if exists
     if (DataBaseManager::restorePreviousDataBase())
@@ -56,6 +52,9 @@ MainWindow::~MainWindow(void)
     // Models
     delete this->_teamListModel;
     delete this->_raceListModel;
+
+    // Contextal menu
+    delete this->_raceTableContextMenu;
 }
 
 void MainWindow::createTeamListModel(void)
@@ -136,6 +135,18 @@ void MainWindow::createToolBar(void)
     // if the race changed, the stopwatch is stopped
     connect(this->_comboBoxRaceList, SIGNAL(currentIndexChanged(int)),
             this->_stopWatch, SLOT(reset()));
+}
+
+void MainWindow::createRaceTableContextMenu(void)
+{
+    if (this->_raceTableContextMenu != NULL)
+        delete this->_raceTableContextMenu;
+
+    // Create menu
+    this->_raceTableContextMenu = new QMenu(this);
+
+    // Add some "GUI created" actions
+    this->_raceTableContextMenu->addAction(this->ui->actionDeleteSelectedLap);
 }
 
 void MainWindow::centerOnScreen(void)
@@ -556,6 +567,16 @@ void MainWindow::on_actionDeleteRace_triggered(void)
         QMessageBox::warning(this, tr("Enable to delete race ") + raceName,
                              exception.what());
     }
+}
+
+void MainWindow::on_tableWidgetLapList_customContextMenuRequested(const QPoint &pos)
+{
+    if (!this->_raceTableContextMenu) // No custom menu created
+        return;
+
+    // Display custom contextual menu
+    this->_raceTableContextMenu->exec(
+                this->ui->tableWidgetLapList->viewport()->mapToGlobal(pos));
 }
 
 void MainWindow::updateLapListTableContent(int currentRaceIndex)

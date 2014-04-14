@@ -71,6 +71,12 @@ class MainWindow : public QMainWindow
         void createToolBar(void);
 
         /*!
+         * \brief createRaceTableContextMenu : create a custom contextual menu
+         * for the race table (called by right click)
+         */
+        void createRaceTableContextMenu(void);
+
+        /*!
          * \brief centerOnScreen : center the MainWindow
          */
         void centerOnScreen(void);
@@ -136,6 +142,7 @@ class MainWindow : public QMainWindow
         // Race Management
         void on_actionCreateRace_triggered(void);
         void on_actionDeleteRace_triggered(void);
+        void on_tableWidgetLapList_customContextMenuRequested(const QPoint& pos);
         void updateLapListTableContent(int currentRaceIndex);
         void raceStarted(void);
 
@@ -155,6 +162,7 @@ class MainWindow : public QMainWindow
         // Race
         int _currentRaceID;
         LapIdentifier _previousLapsInformation;
+        QMenu* _raceTableContextMenu;
 };
 
 #endif /* __MAINWINDOW_HPP__ */

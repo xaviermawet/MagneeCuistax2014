@@ -2,6 +2,14 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>540</width>
+    <height>364</height>
+   </rect>
+  </property>
   <property name="windowTitle">
    <string>Magnée Cuistax 2014</string>
   </property>
@@ -74,6 +82,9 @@
         </item>
         <item>
          <widget class="NTableWidget" name="tableWidgetLapList">
+          <property name="contextMenuPolicy">
+           <enum>Qt::CustomContextMenu</enum>
+          </property>
           <property name="editTriggers">
            <set>QAbstractItemView::NoEditTriggers</set>
           </property>
@@ -271,6 +282,14 @@
    </property>
    <property name="toolTip">
     <string>Open the settings dialog</string>
+   </property>
+  </action>
+  <action name="actionDeleteSelectedLap">
+   <property name="text">
+    <string>Delete the selected lap</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
    </property>
   </action>
  </widget>
