@@ -22,9 +22,7 @@ MainWindow::MainWindow(QWidget* parent) :
     // GUI Configuration
     this->ui->setupUi(this);
     this->createToolBar();
-
-    // Restore previous MainWindows layout settings
-    this->readSettings();
+    this->ui->tableWidgetLapList->setMaxRow(30);
 
     // Connect to previous database if exists
     if (DataBaseManager::restorePreviousDataBase())
@@ -41,6 +39,9 @@ MainWindow::MainWindow(QWidget* parent) :
     }
     else
         this->updateDataBaseActionsVisibility(false);
+
+    // Restore previous MainWindows layout settings
+    this->readSettings();
 }
 
 MainWindow::~MainWindow(void)
@@ -125,8 +126,9 @@ void MainWindow::createToolBar(void)
     // Create stopwatch
     this->_stopWatch = new NStopWatch(this);
 
-    // Add the stopwatch to the mainToolBar
+    // Add the stopwatch to the mainToolBar (hidden)
     this->ui->mainToolBar->addWidget(this->_stopWatch);
+    this->_stopWatch->setEnabled(false);
 
     // Informs th MainWindow that the race started
     connect(this->_stopWatch, SIGNAL(started()), this, SLOT(raceStarted()));
@@ -150,23 +152,32 @@ void MainWindow::centerOnScreen(void)
 
 void MainWindow::readSettings(void)
 {
+    // Check if settings must be restored
+    QSettings settings;
+    if (!settings.value(QSETTINGS_BACKUPANDRESTORE_KEYWORD, false).toBool())
+        return;
+
     // Restore MainWindow settings
     this->readLayoutSettings(QSETTINGS_MAINWINDOW_KEYWORD);
 
     // Get the number of rows for the lap list
-    QSettings settings;
     this->ui->tableWidgetLapList->setMaxRow(
-                settings.value("LapListRows", 20).toInt());
+               settings.value(QSETTINGS_RACETABLEROWCOUNT_KEYWORD, 20).toInt());
 }
 
 void MainWindow::writeSettings(void) const
 {
+    // Check if settings must be saved
+    QSettings settings;
+    if (!settings.value(QSETTINGS_BACKUPANDRESTORE_KEYWORD, false).toBool())
+        return;
+
     // Save MainWindow settings
     this->writeLayoutSettings(QSETTINGS_MAINWINDOW_KEYWORD);
 
     // Save the number of rows for the lap list
-    QSettings settings;
-    settings.setValue("LapListRows", this->ui->tableWidgetLapList->maxRow());
+    settings.setValue(QSETTINGS_RACETABLEROWCOUNT_KEYWORD,
+                      this->ui->tableWidgetLapList->maxRow());
 }
 
 void MainWindow::readLayoutSettings(const QString& settingsGroup)
@@ -329,10 +340,25 @@ void MainWindow::on_actionOptions_triggered(void)
 {
     DialogSettings dial;
 
+    // Configure dialog
+    dial.setNumberOfLaps(this->ui->tableWidgetLapList->maxRow());
+    dial.setReloadPreviousLaps(false);
+    QSettings settings;
+    dial.setBackUpAndRestoreApplicationState(
+            settings.value(QSETTINGS_BACKUPANDRESTORE_KEYWORD, false).toBool());
+
+    // Open settings dialog
     if (dial.exec() != QDialog::Accepted) // User canceled
         return;
 
-    qDebug() << "Apply settings ... TODO";
+    // Save settings
+    settings.setValue(QSETTINGS_BACKUPANDRESTORE_KEYWORD,
+                      dial.isBackUpAndRestoreApplicationStateChecked());
+
+    this->ui->tableWidgetLapList->setMaxRow(dial.numberOfLaps());
+
+    if (dial.isReloadPreviousLapsChecked())
+       this->updateLapListTableContent(this->_comboBoxRaceList->currentIndex());
 }
 
 
@@ -537,13 +563,13 @@ void MainWindow::updateLapListTableContent(int currentRaceIndex)
     if (currentRaceIndex < 0) // No row selected in the combobox
     {
         this->_currentRaceID = -1;
+        this->_stopWatch->setEnabled(false);
         return;
     }
 
     this->_currentRaceID =
             this->_raceListModel->index(currentRaceIndex, 1).data().toInt();
-
-    qDebug() << "Mise à jour du race id (" << this->_currentRaceID << ") et du tableau lap ...";
+    this->_stopWatch->setEnabled(true);
 
     // clear lap list table
     this->ui->tableWidgetLapList->clearContents();

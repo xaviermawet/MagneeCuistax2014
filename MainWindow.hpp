@@ -23,7 +23,9 @@
 // Personal Widgets
 #include "Widgets/NStopWatch.hpp"
 
-#define QSETTINGS_MAINWINDOW_KEYWORD "MainWindow"
+#define QSETTINGS_MAINWINDOW_KEYWORD        "MainWindow"
+#define QSETTINGS_BACKUPANDRESTORE_KEYWORD  "BackUpAndRestore"
+#define QSETTINGS_RACETABLEROWCOUNT_KEYWORD "RaceTableRowCount"
 
 namespace Ui {
     class MainWindow;
