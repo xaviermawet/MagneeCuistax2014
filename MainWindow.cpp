@@ -569,7 +569,8 @@ void MainWindow::on_actionDeleteRace_triggered(void)
     }
 }
 
-void MainWindow::on_tableWidgetLapList_customContextMenuRequested(const QPoint &pos)
+void MainWindow::on_tableWidgetLapList_customContextMenuRequested(
+        const QPoint &pos)
 {
     if (!this->_raceTableContextMenu) // No custom menu created
         return;
@@ -577,6 +578,49 @@ void MainWindow::on_tableWidgetLapList_customContextMenuRequested(const QPoint &
     // Display custom contextual menu
     this->_raceTableContextMenu->exec(
                 this->ui->tableWidgetLapList->viewport()->mapToGlobal(pos));
+}
+
+void MainWindow::on_actionDeleteSelectedLap_triggered(void)
+{
+    QItemSelectionModel* select = this->ui->tableWidgetLapList->selectionModel();
+
+    // Get all lap informations
+    int cuistaxNumber = select->selectedRows(0).first().data().toInt();
+    int lapNumber = select->selectedRows(2).first().data().toInt();
+
+    QSqlQuery deleteQuery("DELETE FROM LAP "
+                          "WHERE num = ? "
+                              "AND ref_race = ? "
+                              "AND ref_team = ?");
+    deleteQuery.addBindValue(lapNumber);
+    deleteQuery.addBindValue(this->_currentRaceID);
+    deleteQuery.addBindValue(cuistaxNumber);
+
+    try
+    {
+        // Delete record from database
+        DataBaseManager::execTransaction(deleteQuery);
+
+        // Remove the row from the table
+        this->ui->tableWidgetLapList->removeRow(
+                    select->selectedIndexes().first().row());
+
+        // Update the lap number
+        QSqlQuery resetIdQuery("UPDATE LAP "
+                               "SET num = num - 1 "
+                               "WHERE num > ? "
+                                  "AND ref_race = ? "
+                                  "AND ref_team = ?");
+        resetIdQuery.addBindValue(lapNumber);
+        resetIdQuery.addBindValue(this->_currentRaceID);
+        resetIdQuery.addBindValue(cuistaxNumber);
+        DataBaseManager::execTransaction(resetIdQuery);
+    }
+    catch(NException const& exception)
+    {
+        QMessageBox::critical(this, tr("Enable to delete the selected lap"),
+                              exception.what());
+    }
 }
 
 void MainWindow::updateLapListTableContent(int currentRaceIndex)

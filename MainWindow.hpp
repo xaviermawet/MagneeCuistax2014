@@ -143,6 +143,7 @@ class MainWindow : public QMainWindow
         void on_actionCreateRace_triggered(void);
         void on_actionDeleteRace_triggered(void);
         void on_tableWidgetLapList_customContextMenuRequested(const QPoint& pos);
+        void on_actionDeleteSelectedLap_triggered(void);
         void updateLapListTableContent(int currentRaceIndex);
         void raceStarted(void);
 
