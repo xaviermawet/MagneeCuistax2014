@@ -2,14 +2,6 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
-  <property name="geometry">
-   <rect>
-    <x>0</x>
-    <y>0</y>
-    <width>540</width>
-    <height>364</height>
-   </rect>
-  </property>
   <property name="windowTitle">
    <string>Magnée Cuistax 2014</string>
   </property>
@@ -82,6 +74,9 @@
         </item>
         <item>
          <widget class="NTableWidget" name="tableWidgetLapList">
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
           <property name="alternatingRowColors">
            <bool>true</bool>
           </property>
