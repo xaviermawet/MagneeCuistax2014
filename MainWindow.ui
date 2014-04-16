@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>540</width>
-    <height>364</height>
+    <width>930</width>
+    <height>554</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -71,58 +71,69 @@
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="layoutWidget">
-       <layout class="QVBoxLayout" name="verticalLayoutLapList">
-        <item>
-         <widget class="QLabel" name="labelLapList">
-          <property name="text">
-           <string>Race table :</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="NTableWidget" name="tableWidgetLapList">
-          <property name="contextMenuPolicy">
-           <enum>Qt::CustomContextMenu</enum>
-          </property>
-          <property name="editTriggers">
-           <set>QAbstractItemView::NoEditTriggers</set>
-          </property>
-          <property name="alternatingRowColors">
-           <bool>true</bool>
-          </property>
-          <property name="selectionMode">
-           <enum>QAbstractItemView::SingleSelection</enum>
-          </property>
-          <property name="selectionBehavior">
-           <enum>QAbstractItemView::SelectRows</enum>
-          </property>
-          <attribute name="verticalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-          <column>
-           <property name="text">
-            <string>Cuistax number</string>
+      <widget class="QTabWidget" name="mainTabWidget">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="tabRaceTable">
+        <attribute name="title">
+         <string>Race Table</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayoutTabRaceTable">
+         <item>
+          <widget class="NTableWidget" name="tableWidgetLapList">
+           <property name="contextMenuPolicy">
+            <enum>Qt::CustomContextMenu</enum>
            </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Team name</string>
+           <property name="editTriggers">
+            <set>QAbstractItemView::NoEditTriggers</set>
            </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Lap</string>
+           <property name="alternatingRowColors">
+            <bool>true</bool>
            </property>
-          </column>
-          <column>
-           <property name="text">
-            <string>Time</string>
+           <property name="selectionMode">
+            <enum>QAbstractItemView::SingleSelection</enum>
            </property>
-          </column>
-         </widget>
-        </item>
-       </layout>
+           <property name="selectionBehavior">
+            <enum>QAbstractItemView::SelectRows</enum>
+           </property>
+           <attribute name="verticalHeaderVisible">
+            <bool>false</bool>
+           </attribute>
+           <column>
+            <property name="text">
+             <string>Cuistax number</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Team name</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Lap</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Time</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tabLapRanking">
+        <attribute name="title">
+         <string>Lap Ranking</string>
+        </attribute>
+       </widget>
+       <widget class="QWidget" name="tabTimeRanking">
+        <attribute name="title">
+         <string>Time Ranking</string>
+        </attribute>
+       </widget>
       </widget>
      </widget>
     </item>
@@ -133,7 +144,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>540</width>
+     <width>930</width>
      <height>22</height>
     </rect>
    </property>
