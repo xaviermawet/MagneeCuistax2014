@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     Widgets/NStopWatch.cpp \
     DataBase/Lap.cpp \
     NTableWidget.cpp \
-    Dialogs/DialogSettings.cpp
+    Dialogs/DialogSettings.cpp \
+    NTableView.cpp
 
 HEADERS  += MainWindow.hpp \
     Utils/NException.hpp \
@@ -35,7 +36,8 @@ HEADERS  += MainWindow.hpp \
     Widgets/NStopWatch.hpp \
     DataBase/Lap.hpp \
     NTableWidget.hpp \
-    Dialogs/DialogSettings.hpp
+    Dialogs/DialogSettings.hpp \
+    NTableView.hpp
 
 FORMS    += MainWindow.ui \
     Dialogs/DialogAddTeam.ui \
