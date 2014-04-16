@@ -130,7 +130,20 @@
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayoutTabLapRanking">
          <item>
-          <widget class="NTableView" name="tableViewLapRanking"/>
+          <widget class="NTableView" name="tableViewLapRanking">
+           <property name="editTriggers">
+            <set>QAbstractItemView::NoEditTriggers</set>
+           </property>
+           <property name="selectionMode">
+            <enum>QAbstractItemView::SingleSelection</enum>
+           </property>
+           <property name="selectionBehavior">
+            <enum>QAbstractItemView::SelectRows</enum>
+           </property>
+           <attribute name="verticalHeaderVisible">
+            <bool>false</bool>
+           </attribute>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -333,8 +346,8 @@
    <slot>on_actionCreateTeam_triggered()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>39</x>
-     <y>478</y>
+     <x>52</x>
+     <y>519</y>
     </hint>
     <hint type="destinationlabel">
      <x>277</x>
@@ -349,8 +362,8 @@
    <slot>on_actionDeleteTeam_triggered()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>227</x>
-     <y>460</y>
+     <x>418</x>
+     <y>519</y>
     </hint>
     <hint type="destinationlabel">
      <x>396</x>
@@ -358,9 +371,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>mainTabWidget</sender>
+   <signal>currentChanged(int)</signal>
+   <receiver>MainWindow</receiver>
+   <slot>updateCurrentRanking()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>572</x>
+     <y>85</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>324</x>
+     <y>64</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>on_actionCreateTeam_triggered()</slot>
   <slot>on_actionDeleteTeam_triggered()</slot>
+  <slot>updateCurrentRanking()</slot>
  </slots>
 </ui>
