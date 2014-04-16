@@ -128,6 +128,11 @@
         <attribute name="title">
          <string>Lap Ranking</string>
         </attribute>
+        <layout class="QVBoxLayout" name="verticalLayoutTabLapRanking">
+         <item>
+          <widget class="NTableView" name="tableViewLapRanking"/>
+         </item>
+        </layout>
        </widget>
        <widget class="QWidget" name="tabTimeRanking">
         <attribute name="title">
@@ -310,6 +315,11 @@
    <class>NTableWidget</class>
    <extends>QTableWidget</extends>
    <header location="global">NTableWidget.hpp</header>
+  </customwidget>
+  <customwidget>
+   <class>NTableView</class>
+   <extends>QTableView</extends>
+   <header location="global">NTableView.hpp</header>
   </customwidget>
  </customwidgets>
  <resources>
