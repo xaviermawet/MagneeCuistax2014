@@ -86,7 +86,7 @@ void MainWindow::createRaceListModel(void)
     this->_comboBoxRaceList->setModel(this->_raceListModel);
 
     // Populates the model
-    this->_raceListModel->setQuery("SELECT name, id FROM RACE");
+    this->_raceListModel->setQuery("SELECT name, id, distance FROM RACE");
 
 #if (QT_VERSION > QT_VERSION_CHECK(5, 0, 0))
     this->_comboBoxRaceList->setCurrentIndex(0);
