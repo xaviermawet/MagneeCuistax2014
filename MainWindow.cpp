@@ -4,7 +4,8 @@
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent), ui(new Ui::MainWindow),
     _comboBoxRaceList(NULL), _stopWatch(NULL), _teamListModel(NULL),
-    _raceListModel(NULL), _currentRaceID(-1), _raceTableContextMenu(NULL)
+    _raceListModel(NULL), _lapRankingModel(NULL),
+    _currentRaceID(-1), _currentRaceDistance(-1), _raceTableContextMenu(NULL)
 {
     QCoreApplication::setOrganizationName("N4k1m");
     QCoreApplication::setApplicationName("MagneeCuistax2014");
@@ -19,6 +20,7 @@ MainWindow::MainWindow(QWidget* parent) :
     this->ui->setupUi(this);
     this->createToolBar();
     this->createRaceTableContextMenu();
+    this->createLapRankingModel();
 
     // Connect to previous database if exists
     if (DataBaseManager::restorePreviousDataBase())
@@ -52,6 +54,7 @@ MainWindow::~MainWindow(void)
     // Models
     delete this->_teamListModel;
     delete this->_raceListModel;
+    delete this->_lapRankingModel;
 
     // Contextal menu
     delete this->_raceTableContextMenu;
@@ -88,9 +91,20 @@ void MainWindow::createRaceListModel(void)
     // Populates the model
     this->_raceListModel->setQuery("SELECT name, id, distance FROM RACE");
 
-#if (QT_VERSION > QT_VERSION_CHECK(5, 0, 0))
+    // Select the first race
     this->_comboBoxRaceList->setCurrentIndex(0);
-#endif
+}
+
+void MainWindow::createLapRankingModel(void)
+{
+    if (this->_lapRankingModel != NULL)
+        delete this->_lapRankingModel;
+
+    // Create model
+    this->_lapRankingModel = new NSqlQueryModel(this);
+
+    // Apply the model to the table wiew
+    this->ui->tableViewLapRanking->setModel(this->_lapRankingModel);
 }
 
 void MainWindow::createToolBar(void)
@@ -112,9 +126,9 @@ void MainWindow::createToolBar(void)
     // Add the comboBox to the mainToolBar
     this->ui->mainToolBar->addWidget(this->_comboBoxRaceList);
 
-    // Update the current race id and populate the lap list table
+    // Update the current race id and update all the needed tables
     connect(this->_comboBoxRaceList, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(updateLapListTableContent(int)));
+            this, SLOT(currentRaceChanged(int)));
 
     /* ---------------------------------------------------------------------- *
      *                                Stopwatch                               *
@@ -366,12 +380,13 @@ void MainWindow::on_actionOptions_triggered(void)
     settings.setValue(QSETTINGS_BACKUPANDRESTORE_KEYWORD,
                       dial.isBackUpAndRestoreApplicationStateChecked());
 
+    int previousNbOfRowsDisplayed = this->ui->tableWidgetLapList->rowCount();
     this->ui->tableWidgetLapList->setMaxRow(dial.numberOfLaps());
 
-    if (dial.isReloadPreviousLapsChecked())
-       this->updateLapListTableContent(this->_comboBoxRaceList->currentIndex());
+    if (dial.isReloadPreviousLapsChecked() &&
+            previousNbOfRowsDisplayed < dial.numberOfLaps())
+        this->updateLapListTableContent();
 }
-
 
 void MainWindow::on_actionCreateTeam_triggered(void)
 {
@@ -494,6 +509,7 @@ void MainWindow::on_tableViewTeamList_activated(const QModelIndex &index)
                << currentLapTime.toString("mm:ss:zzz");
         this->ui->tableWidgetLapList->insertRowItems(0, params);
 
+        this->updateCurrentRanking();
     }
     catch(NException const& exception)
     {
@@ -617,7 +633,7 @@ void MainWindow::on_actionDeleteSelectedLap_triggered(void)
         DataBaseManager::execTransaction(resetIdQuery);
 
         // Update the race table content
-        this->updateLapListTableContent(this->_comboBoxRaceList->currentIndex());
+        this->updateLapListTableContent();
     }
     catch(NException const& exception)
     {
@@ -626,45 +642,68 @@ void MainWindow::on_actionDeleteSelectedLap_triggered(void)
     }
 }
 
-void MainWindow::updateLapListTableContent(int currentRaceIndex)
+void MainWindow::currentRaceChanged(int currentRaceIndex)
 {
-    if (currentRaceIndex < 0) // No row selected in the combobox
-    {
-        this->_currentRaceID = -1;
-        this->_stopWatch->setEnabled(false);
-        return;
-    }
-
-    this->_currentRaceID =
-            this->_raceListModel->index(currentRaceIndex, 1).data().toInt();
-    this->_stopWatch->setEnabled(true);
-
     // clear lap list table
     this->ui->tableWidgetLapList->clearContents();
     this->ui->tableWidgetLapList->setRowCount(0);
 
-    // Populate the lap table with previous lap information
+    // No row selected in the combobox
+    if (currentRaceIndex < 0)
+    {
+        this->_currentRaceID = -1;
+        this->_currentRaceDistance = -1;
+        this->_stopWatch->setEnabled(false);
+        return;
+    }
+
+    // Get the current race id and distance
+    this->_currentRaceID =
+            this->_raceListModel->index(currentRaceIndex, 1).data().toInt();
+    this->_currentRaceDistance =
+            this->_raceListModel->index(currentRaceIndex, 2).data().toFloat();
+
+    // Enable stop watch
+    this->_stopWatch->setEnabled(true);
+
+    // Update all the tables based on RACE or LAP sql tables
+    this->updateLapListTableContent();
+    this->updateRankingsModelsQueries();
+}
+
+void MainWindow::updateLapListTableContent(void)
+{
+    // Prepare binding value
     QVariantList param;
     param << this->_currentRaceID
           << this->ui->tableWidgetLapList->maxRow();
 
-    QSqlQuery lapQuery = DataBaseManager::execQuery(
-                "SELECT TEAM.num_cuistax, TEAM.name, LAP.num, LAP.end_time "
-                "FROM LAP, TEAM "
-                "WHERE LAP.ref_team = TEAM.num_cuistax "
-                "AND LAP.ref_race = ? "
-                "ORDER BY LAP.ROWID DESC LIMIT ?", param);
-
-    while (lapQuery.next())
+    try
     {
-        QVariantList row;
-        row << lapQuery.value(0)
-            << lapQuery.value(1)
-            << lapQuery.value(2)
-            << lapQuery.value(3).toTime().toString("mm:ss:zzz");
+        QSqlQuery lapQuery = DataBaseManager::execQuery(
+        "SELECT TEAM.num_cuistax, TEAM.name, LAP.num, LAP.end_time "
+        "FROM LAP, TEAM "
+        "WHERE LAP.ref_team = TEAM.num_cuistax "
+        "AND LAP.ref_race = ? "
+        "ORDER BY LAP.ROWID DESC LIMIT ?", param);
 
-        this->ui->tableWidgetLapList->insertRowItems(
-                    this->ui->tableWidgetLapList->rowCount(), row);
+        // Populate the race table with previous laps information
+        while (lapQuery.next())
+        {
+            QVariantList row;
+            row << lapQuery.value(0)
+                << lapQuery.value(1)
+                << lapQuery.value(2)
+                << lapQuery.value(3).toTime().toString("mm:ss:zzz");
+
+            this->ui->tableWidgetLapList->insertRowItems(
+                        this->ui->tableWidgetLapList->rowCount(), row);
+        }
+    }
+    catch(NException const& exception)
+    {
+        QMessageBox::warning(this, tr("Enable to get old laps information"),
+                             exception.what());
     }
 }
 
@@ -699,4 +738,46 @@ void MainWindow::raceStarted(void)
         QMessageBox::warning(this, tr("Enable to get previous lap information"),
                              exception.what());
     }
+}
+
+void MainWindow::updateRankingsModelsQueries(void)
+{
+    /* ---------------------------------------------------------------------- *
+     *                               LAP RANKING                              *
+     * ---------------------------------------------------------------------- */
+    QString queryString(
+    "SELECT TEAM.num_cuistax , TEAM.name, MAX(LAP.num), MAX(LAP.num) * %1 "
+    "FROM LAP "
+    "INNER JOIN TEAM ON TEAM.num_cuistax = LAP.ref_team "
+    "WHERE LAP.ref_race = %2 "
+    "GROUP BY TEAM.num_cuistax , TEAM.name "
+    "ORDER BY LAP.num DESC");
+
+    // Add binding value
+    queryString = queryString.arg(
+                this->_currentRaceDistance).arg(this->_currentRaceID);
+
+    // Create query
+    QSqlQuery query(queryString);
+
+    // Populate model
+    this->_lapRankingModel->setQuery(query);
+
+    // Change header title
+    this->_lapRankingModel->setHeaderData(0, Qt::Horizontal, tr("Cuistax number"));
+    this->_lapRankingModel->setHeaderData(1, Qt::Horizontal, tr("Team name"));
+    this->_lapRankingModel->setHeaderData(2, Qt::Horizontal, tr("Lap count"));
+    this->_lapRankingModel->setHeaderData(3, Qt::Horizontal, tr("Distance (m)"));
+
+    /* ---------------------------------------------------------------------- *
+     *                              TIME RANKING                              *
+     * ---------------------------------------------------------------------- */
+}
+
+void MainWindow::updateCurrentRanking(void)
+{
+    if (this->ui->mainTabWidget->currentWidget() == this->ui->tabLapRanking)
+        this->_lapRankingModel->refresh();
+    else if (this->ui->mainTabWidget->currentWidget() == this->ui->tabTimeRanking)
+        qDebug() << "TODO ...";
 }

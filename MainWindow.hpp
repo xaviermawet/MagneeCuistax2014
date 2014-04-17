@@ -66,6 +66,11 @@ class MainWindow : public QMainWindow
         void createRaceListModel(void);
 
         /*!
+         * \brief createLapRankingModel : create a model for lap ranking table view
+         */
+        void createLapRankingModel(void);
+
+        /*!
          * \brief createToolBar : create all the widgets for the mainToolBar
          */
         void createToolBar(void);
@@ -144,8 +149,13 @@ class MainWindow : public QMainWindow
         void on_actionDeleteRace_triggered(void);
         void on_tableWidgetLapList_customContextMenuRequested(const QPoint& pos);
         void on_actionDeleteSelectedLap_triggered(void);
-        void updateLapListTableContent(int currentRaceIndex);
+        void currentRaceChanged(int currentRaceIndex);
+        void updateLapListTableContent(void);
         void raceStarted(void);
+
+        // Tab management
+        void updateRankingsModelsQueries(void);
+        void updateCurrentRanking(void);
 
     protected:
 
@@ -159,9 +169,11 @@ class MainWindow : public QMainWindow
         // Models
         SqlTableModelIdNotEditable* _teamListModel;
         NSqlQueryModel* _raceListModel;
+        NSqlQueryModel* _lapRankingModel;
 
         // Race
-        int _currentRaceID;
+        int   _currentRaceID;
+        float _currentRaceDistance;
         LapIdentifier _previousLapsInformation;
         QMenu* _raceTableContextMenu;
 };
