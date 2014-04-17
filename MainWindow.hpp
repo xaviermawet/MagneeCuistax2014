@@ -66,9 +66,9 @@ class MainWindow : public QMainWindow
         void createRaceListModel(void);
 
         /*!
-         * \brief createLapRankingModel : create a model for lap ranking table view
+         * \brief createRankingModels : create models for two ranking TableViews
          */
-        void createLapRankingModel(void);
+        void createRankingModels(void);
 
         /*!
          * \brief createToolBar : create all the widgets for the mainToolBar
@@ -170,6 +170,7 @@ class MainWindow : public QMainWindow
         SqlTableModelIdNotEditable* _teamListModel;
         NSqlQueryModel* _raceListModel;
         NSqlQueryModel* _lapRankingModel;
+        NSqlQueryModel* _timeRankingModel;
 
         // Race
         int   _currentRaceID;

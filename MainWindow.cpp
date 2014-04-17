@@ -4,7 +4,7 @@
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent), ui(new Ui::MainWindow),
     _comboBoxRaceList(NULL), _stopWatch(NULL), _teamListModel(NULL),
-    _raceListModel(NULL), _lapRankingModel(NULL),
+    _raceListModel(NULL), _lapRankingModel(NULL), _timeRankingModel(NULL),
     _currentRaceID(-1), _currentRaceDistance(-1), _raceTableContextMenu(NULL)
 {
     QCoreApplication::setOrganizationName("N4k1m");
@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget* parent) :
     this->ui->setupUi(this);
     this->createToolBar();
     this->createRaceTableContextMenu();
-    this->createLapRankingModel();
+    this->createRankingModels();
 
     // Connect to previous database if exists
     if (DataBaseManager::restorePreviousDataBase())
@@ -55,6 +55,7 @@ MainWindow::~MainWindow(void)
     delete this->_teamListModel;
     delete this->_raceListModel;
     delete this->_lapRankingModel;
+    delete this->_timeRankingModel;
 
     // Contextal menu
     delete this->_raceTableContextMenu;
@@ -95,8 +96,11 @@ void MainWindow::createRaceListModel(void)
     this->_comboBoxRaceList->setCurrentIndex(0);
 }
 
-void MainWindow::createLapRankingModel(void)
+void MainWindow::createRankingModels(void)
 {
+    /* ---------------------------------------------------------------------- *
+     *                               LAP RANKING                              *
+     * ---------------------------------------------------------------------- */
     if (this->_lapRankingModel != NULL)
         delete this->_lapRankingModel;
 
@@ -105,6 +109,18 @@ void MainWindow::createLapRankingModel(void)
 
     // Apply the model to the table wiew
     this->ui->tableViewLapRanking->setModel(this->_lapRankingModel);
+
+    /* ---------------------------------------------------------------------- *
+     *                              TIME RANKING                              *
+     * ---------------------------------------------------------------------- */
+    if (this->_timeRankingModel != NULL)
+        delete this->_timeRankingModel;
+
+    // Create model
+    this->_timeRankingModel = new NSqlQueryModel(this);
+
+    // Apply the model to the table view
+    this->ui->tableViewTimeRanking->setModel(this->_timeRankingModel);
 }
 
 void MainWindow::createToolBar(void)
@@ -753,7 +769,7 @@ void MainWindow::updateRankingsModelsQueries(void)
     "GROUP BY TEAM.num_cuistax , TEAM.name "
     "ORDER BY LAP.num DESC");
 
-    // Add binding value
+    // Add binding values
     queryString = queryString.arg(
                 this->_currentRaceDistance).arg(this->_currentRaceID);
 
@@ -772,6 +788,28 @@ void MainWindow::updateRankingsModelsQueries(void)
     /* ---------------------------------------------------------------------- *
      *                              TIME RANKING                              *
      * ---------------------------------------------------------------------- */
+    QString queryString2(
+    "SELECT TEAM.num_cuistax , TEAM.name, MIN(LAP.end_time), MAX(LAP.end_time) "
+    "FROM LAP "
+    "INNER JOIN TEAM ON TEAM.num_cuistax = LAP.ref_team "
+    "WHERE LAP.ref_race = %1 "
+    "GROUP BY TEAM.num_cuistax , TEAM.name "
+    "ORDER BY MIN(LAP.end_time)");
+
+    // Add binding value
+    queryString2 = queryString2.arg(this->_currentRaceID);
+
+    // Create query
+    QSqlQuery query2(queryString2);
+
+    // Populate model
+    this->_timeRankingModel->setQuery(query2);
+
+    // Change header title
+    this->_timeRankingModel->setHeaderData(0, Qt::Horizontal, tr("Cuistax number"));
+    this->_timeRankingModel->setHeaderData(1, Qt::Horizontal, tr("Team name"));
+    this->_timeRankingModel->setHeaderData(2, Qt::Horizontal, tr("Best time"));
+    this->_timeRankingModel->setHeaderData(3, Qt::Horizontal, tr("Worst time"));
 }
 
 void MainWindow::updateCurrentRanking(void)
@@ -779,5 +817,5 @@ void MainWindow::updateCurrentRanking(void)
     if (this->ui->mainTabWidget->currentWidget() == this->ui->tabLapRanking)
         this->_lapRankingModel->refresh();
     else if (this->ui->mainTabWidget->currentWidget() == this->ui->tabTimeRanking)
-        qDebug() << "TODO ...";
+        this->_timeRankingModel->refresh();
 }
