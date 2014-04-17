@@ -456,6 +456,10 @@ void MainWindow::on_actionDeleteTeam_triggered(void)
                     tr("\" deleted"), 4000);
 
         this->_teamListModel->select();
+
+        // Update the race and ranking tables content
+        this->updateLapListTableContent();
+        this->updateCurrentRanking();
     }
     catch(NException const& exception)
     {
@@ -660,16 +664,17 @@ void MainWindow::on_actionDeleteSelectedLap_triggered(void)
 
 void MainWindow::currentRaceChanged(int currentRaceIndex)
 {
-    // clear lap list table
-    this->ui->tableWidgetLapList->clearContents();
-    this->ui->tableWidgetLapList->setRowCount(0);
-
     // No row selected in the combobox
     if (currentRaceIndex < 0)
     {
         this->_currentRaceID = -1;
         this->_currentRaceDistance = -1;
         this->_stopWatch->setEnabled(false);
+
+        // clear lap list table
+        this->ui->tableWidgetLapList->clearContents();
+        this->ui->tableWidgetLapList->setRowCount(0);
+
         return;
     }
 
@@ -689,6 +694,10 @@ void MainWindow::currentRaceChanged(int currentRaceIndex)
 
 void MainWindow::updateLapListTableContent(void)
 {
+    // clear lap list table
+    this->ui->tableWidgetLapList->clearContents();
+    this->ui->tableWidgetLapList->setRowCount(0);
+
     // Prepare binding value
     QVariantList param;
     param << this->_currentRaceID
