@@ -24,7 +24,8 @@ SOURCES += main.cpp\
     DataBase/Lap.cpp \
     NTableWidget.cpp \
     Dialogs/DialogSettings.cpp \
-    NTableView.cpp
+    NTableView.cpp \
+    Widgets/DataViewer.cpp
 
 HEADERS  += MainWindow.hpp \
     Utils/NException.hpp \
@@ -37,13 +38,15 @@ HEADERS  += MainWindow.hpp \
     DataBase/Lap.hpp \
     NTableWidget.hpp \
     Dialogs/DialogSettings.hpp \
-    NTableView.hpp
+    NTableView.hpp \
+    Widgets/DataViewer.hpp
 
 FORMS    += MainWindow.ui \
     Dialogs/DialogAddTeam.ui \
     Dialogs/DialogCreateRace.ui \
     Widgets/NStopWatch.ui \
-    Dialogs/DialogSettings.ui
+    Dialogs/DialogSettings.ui \
+    Widgets/DataViewer.ui
 
 RESOURCES += \
     Resources.qrc
