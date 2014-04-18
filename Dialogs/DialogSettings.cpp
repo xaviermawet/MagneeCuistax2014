@@ -6,6 +6,10 @@ DialogSettings::DialogSettings(QWidget* parent) :
 {
     // GUI Configuration
     this->ui->setupUi(this);
+
+    // Update push button state
+    this->on_listWidgetRankingColumns_currentRowChanged(
+                this->ui->listWidgetRankingColumns->currentRow());
 }
 
 DialogSettings::~DialogSettings(void)

@@ -38,6 +38,10 @@ class DataViewer : public QWidget
          */
         virtual ~DataViewer(void);
 
+    signals:
+
+        void closed(void);
+
     public slots:
 
         void startStopWatch(void);
@@ -47,6 +51,11 @@ class DataViewer : public QWidget
     protected:
 
         void createHeader(void);
+
+        /*!
+         * \brief closeEvent : overloaded method for writing settings
+         */
+        virtual void closeEvent(QCloseEvent* event);
 
     protected:
 

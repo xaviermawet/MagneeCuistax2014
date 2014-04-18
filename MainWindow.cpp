@@ -846,14 +846,22 @@ void MainWindow::on_actionOpenDataViewer_triggered(void)
     this->_dataViewer->setRaceTitle(
                 this->_comboBoxRaceList->currentText() + tr(" : Lap Ranking"));
 
-    // Connect signals/slots for stopwatch
+    // Connect signals/slots
     connect(this->_stopWatch, SIGNAL(started()),
             this->_dataViewer, SLOT(startStopWatch()));
     connect(this->_stopWatch, SIGNAL(stopped(QTime)),
             this->_dataViewer, SLOT(stopStopWatch()));
     connect(this->_stopWatch, SIGNAL(reseted()),
             this->_dataViewer, SLOT(resetStopWatch()));
+    connect(this->_dataViewer, SIGNAL(closed()),
+            this, SLOT(destroyDataViewer()));
 
     // Display the new dataViewer window
     this->_dataViewer->show();
+}
+
+void MainWindow::destroyDataViewer(void)
+{
+    delete this->_dataViewer;
+    this->_dataViewer = NULL;
 }

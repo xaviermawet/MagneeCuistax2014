@@ -154,12 +154,13 @@ class MainWindow : public QMainWindow
         void updateLapListTableContent(void);
         void raceStarted(void);
 
-        // Tab management
+        // Tab Management
         void updateRankingsModelsQueries(void);
         void updateCurrentRanking(void);
 
-        // DataViewer management
+        // Data Viewer Management
         void on_actionOpenDataViewer_triggered(void);
+        void destroyDataViewer(void);
 
     protected:
 

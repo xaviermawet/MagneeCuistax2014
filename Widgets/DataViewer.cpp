@@ -60,3 +60,10 @@ void DataViewer::createHeader(void)
     // Add the stopwatch in header
     this->ui->horizontalLayoutHeader->addWidget(this->_stopWatch);
 }
+
+void DataViewer::closeEvent(QCloseEvent* event)
+{
+    QWidget::closeEvent(event);
+
+    emit this->closed();
+}
