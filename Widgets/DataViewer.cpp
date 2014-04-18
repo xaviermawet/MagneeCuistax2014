@@ -2,17 +2,20 @@
 #include "ui_DataViewer.h"
 
 DataViewer::DataViewer(QWidget* parent, Qt::WindowFlags flag) :
-    QWidget(parent, flag), ui(new Ui::DataViewer)
+    QWidget(parent, flag), ui(new Ui::DataViewer), _stopWatch(NULL)
 {
     // GUI Configuration
     this->ui->setupUi(this);
 
+    // Populate header
     this->createHeader();
 }
 
 DataViewer::~DataViewer(void)
 {
+    // Widgets
     delete this->ui;
+    delete this->_stopWatch;
 }
 
 void DataViewer::createHeader(void)

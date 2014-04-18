@@ -187,7 +187,7 @@
      <x>0</x>
      <y>0</y>
      <width>930</width>
-     <height>22</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -219,10 +219,17 @@
     </property>
     <addaction name="actionOptions"/>
    </widget>
+   <widget class="QMenu" name="menuDataViewer">
+    <property name="title">
+     <string>&amp;Data Viewer</string>
+    </property>
+    <addaction name="actionOpenDataViewer"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTeams"/>
    <addaction name="menuRace"/>
    <addaction name="menuTools"/>
+   <addaction name="menuDataViewer"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="movable">
@@ -343,6 +350,17 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="actionOpenDataViewer">
+   <property name="text">
+    <string>&amp;Open</string>
+   </property>
+   <property name="toolTip">
+    <string>Open a new data viewer window</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+V</string>
    </property>
   </action>
  </widget>

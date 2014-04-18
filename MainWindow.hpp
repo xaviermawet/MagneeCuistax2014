@@ -22,6 +22,7 @@
 
 // Personal Widgets
 #include "Widgets/NStopWatch.hpp"
+#include "Widgets/DataViewer.hpp"
 
 #define QSETTINGS_MAINWINDOW_KEYWORD        "MainWindow"
 #define QSETTINGS_BACKUPANDRESTORE_KEYWORD  "BackUpAndRestore"
@@ -157,11 +158,15 @@ class MainWindow : public QMainWindow
         void updateRankingsModelsQueries(void);
         void updateCurrentRanking(void);
 
+        // DataViewer management
+        void on_actionOpenDataViewer_triggered(void);
+
     protected:
 
         // Widgets
         Ui::MainWindow* ui;
-        QComboBox* _comboBoxRaceList;
+        QComboBox*  _comboBoxRaceList;
+        DataViewer* _dataViewer;
 
         // Frames
         NStopWatch* _stopWatch;

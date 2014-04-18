@@ -3,9 +3,10 @@
 
 MainWindow::MainWindow(QWidget* parent) :
     QMainWindow(parent), ui(new Ui::MainWindow),
-    _comboBoxRaceList(NULL), _stopWatch(NULL), _teamListModel(NULL),
-    _raceListModel(NULL), _lapRankingModel(NULL), _timeRankingModel(NULL),
-    _currentRaceID(-1), _currentRaceDistance(-1), _raceTableContextMenu(NULL)
+    _comboBoxRaceList(NULL), _dataViewer(NULL), _stopWatch(NULL),
+    _teamListModel(NULL), _raceListModel(NULL), _lapRankingModel(NULL),
+    _timeRankingModel(NULL), _currentRaceID(-1), _currentRaceDistance(-1),
+    _raceTableContextMenu(NULL)
 {
     QCoreApplication::setOrganizationName("N4k1m");
     QCoreApplication::setApplicationName("MagneeCuistax2014");
@@ -47,6 +48,7 @@ MainWindow::~MainWindow(void)
     // Widgets
     delete this->ui;
     delete this->_comboBoxRaceList;
+    delete this->_dataViewer;
 
     // Frames
     delete this->_stopWatch;
@@ -827,4 +829,16 @@ void MainWindow::updateCurrentRanking(void)
         this->_lapRankingModel->refresh();
     else if (this->ui->mainTabWidget->currentWidget() == this->ui->tabTimeRanking)
         this->_timeRankingModel->refresh();
+}
+
+void MainWindow::on_actionOpenDataViewer_triggered(void)
+{
+    if (this->_dataViewer != NULL)
+        delete this->_dataViewer;
+
+    // Create new window for data viewer
+    this->_dataViewer = new DataViewer(this);
+
+    // Display the new dataViewer window
+    this->_dataViewer->show();
 }
