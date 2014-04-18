@@ -26,6 +26,9 @@ void DataViewer::createHeader(void)
     // Create stopwatch
     this->_stopWatch = new NStopWatch(this);
 
+    // Hide buttons
+    this->_stopWatch->setButtonsVisible(false);
+
     // Add the stopwatch in header
     this->ui->horizontalLayoutHeader->addWidget(this->_stopWatch);
 }

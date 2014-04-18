@@ -27,6 +27,9 @@ class NStopWatch : public QFrame
         bool isActive(void) const;
         bool isInPause(void) const;
 
+        void setButtonsVisible(bool visible);
+        bool areButtonsVisible(void) const;
+
     public slots:
 
         void start(void);

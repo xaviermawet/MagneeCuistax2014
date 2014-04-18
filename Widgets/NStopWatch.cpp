@@ -38,6 +38,18 @@ bool NStopWatch::isInPause(void) const
     return this->_pause;
 }
 
+void NStopWatch::setButtonsVisible(bool visible)
+{
+    this->ui->pushButtonStart->setVisible(visible);
+    this->ui->pushButtonStop->setVisible(visible);
+    this->ui->pushButtonReset->setVisible(visible);
+}
+
+bool NStopWatch::areButtonsVisible(void) const
+{
+    return this->ui->pushButtonStart->isVisible();
+}
+
 void NStopWatch::start(void)
 {
     if (!this->_refreshTimer->isActive())
