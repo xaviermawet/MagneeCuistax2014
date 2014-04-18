@@ -18,9 +18,6 @@
     <layout class="QHBoxLayout" name="horizontalLayoutHeader">
      <item>
       <widget class="QLabel" name="labelTitle">
-       <property name="text">
-        <string>Ranking</string>
-       </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
        </property>
@@ -39,7 +36,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QTableView" name="tableViewRanking">
+    <widget class="NTableView" name="tableViewRanking">
      <property name="editTriggers">
       <set>QAbstractItemView::NoEditTriggers</set>
      </property>
@@ -56,6 +53,13 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>NTableView</class>
+   <extends>QTableView</extends>
+   <header location="global">NTableView.hpp</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

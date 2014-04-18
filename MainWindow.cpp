@@ -839,6 +839,21 @@ void MainWindow::on_actionOpenDataViewer_triggered(void)
     // Create new window for data viewer
     this->_dataViewer = new DataViewer(this);
 
+    // Add a table view model
+    this->_dataViewer->setTableViewModel(this->_lapRankingModel);
+
+    // Change title
+    this->_dataViewer->setRaceTitle(
+                this->_comboBoxRaceList->currentText() + tr(" : Lap Ranking"));
+
+    // Connect signals/slots for stopwatch
+    connect(this->_stopWatch, SIGNAL(started()),
+            this->_dataViewer, SLOT(startStopWatch()));
+    connect(this->_stopWatch, SIGNAL(stopped(QTime)),
+            this->_dataViewer, SLOT(stopStopWatch()));
+    connect(this->_stopWatch, SIGNAL(reseted()),
+            this->_dataViewer, SLOT(resetStopWatch()));
+
     // Display the new dataViewer window
     this->_dataViewer->show();
 }

@@ -11,11 +11,39 @@ DataViewer::DataViewer(QWidget* parent, Qt::WindowFlags flag) :
     this->createHeader();
 }
 
+void DataViewer::setTableViewModel(QAbstractItemModel* model)
+{
+    if (model == NULL)
+        return;
+
+    this->ui->tableViewRanking->setModel(model);
+}
+
+void DataViewer::setRaceTitle(const QString &title)
+{
+    this->ui->labelTitle->setText(title);
+}
+
 DataViewer::~DataViewer(void)
 {
     // Widgets
     delete this->ui;
     delete this->_stopWatch;
+}
+
+void DataViewer::startStopWatch(void)
+{
+    this->_stopWatch->start();
+}
+
+void DataViewer::stopStopWatch(void)
+{
+    this->_stopWatch->stop();
+}
+
+void DataViewer::resetStopWatch(void)
+{
+    this->_stopWatch->reset();
 }
 
 void DataViewer::createHeader(void)

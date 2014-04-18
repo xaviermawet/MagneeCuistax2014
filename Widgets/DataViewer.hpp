@@ -12,16 +12,12 @@
 // Personal Widgets
 #include "Widgets/NStopWatch.hpp"
 
-class MainWindow;
-
 namespace Ui {
     class DataViewer;
 }
 
 class DataViewer : public QWidget
 {
-    friend class MainWindow;
-
         Q_OBJECT
 
     public:
@@ -34,10 +30,19 @@ class DataViewer : public QWidget
         explicit DataViewer(QWidget* parent = 0,
                             Qt::WindowFlags flag = Qt::Window);
 
+        void setTableViewModel(QAbstractItemModel* model);
+        void setRaceTitle(QString const& title);
+
         /*!
          * \brief ~DataViewer : Virtual destructor
          */
         virtual ~DataViewer(void);
+
+    public slots:
+
+        void startStopWatch(void);
+        void stopStopWatch(void);
+        void resetStopWatch(void);
 
     protected:
 
