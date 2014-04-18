@@ -12,12 +12,16 @@
 // Personal Widgets
 #include "Widgets/NStopWatch.hpp"
 
+class MainWindow;
+
 namespace Ui {
     class DataViewer;
 }
 
 class DataViewer : public QWidget
 {
+    friend class MainWindow;
+
         Q_OBJECT
 
     public:
