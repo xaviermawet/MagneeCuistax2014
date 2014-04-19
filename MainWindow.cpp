@@ -26,9 +26,6 @@ MainWindow::MainWindow(QWidget* parent) :
     // Restore previous MainWindows layout settings
     this->readSettings();
 
-    // TEST - A SUPPRIMER
-    this->_optionalFields << lapCount << distance;
-
     // Connect to previous database if exists
     if (DataBaseManager::restorePreviousDataBase())
     {
@@ -194,6 +191,14 @@ void MainWindow::readSettings(void)
     // Get the number of rows for the lap list
     this->ui->tableWidgetLapList->setMaxRow(
                settings.value(QSETTINGS_RACETABLEROWCOUNT_KEYWORD, 20).toInt());
+
+    // Get ranking optional fields
+    QVariantList reading = settings.value(
+                QSETTINGS_RANKINGOPTIONALFIELDS_KEYWORD).toList();
+    foreach (QVariant field, reading)
+    {
+        this->_optionalFields << (RankingOptionalField)field.toInt();
+    }
 }
 
 void MainWindow::writeSettings(void) const
@@ -209,6 +214,10 @@ void MainWindow::writeSettings(void) const
     // Save the number of rows for the lap list
     settings.setValue(QSETTINGS_RACETABLEROWCOUNT_KEYWORD,
                       this->ui->tableWidgetLapList->maxRow());
+
+    // Save ranking optional fields
+    settings.setValue(QSETTINGS_RANKINGOPTIONALFIELDS_KEYWORD,
+                      DataBaseManager::toVariantList(this->_optionalFields));
 }
 
 void MainWindow::readLayoutSettings(const QString& settingsGroup)

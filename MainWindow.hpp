@@ -27,9 +27,10 @@
 #include "Widgets/NStopWatch.hpp"
 #include "Widgets/DataViewer.hpp"
 
-#define QSETTINGS_MAINWINDOW_KEYWORD        "MainWindow"
-#define QSETTINGS_BACKUPANDRESTORE_KEYWORD  "BackUpAndRestore"
-#define QSETTINGS_RACETABLEROWCOUNT_KEYWORD "RaceTableRowCount"
+#define QSETTINGS_MAINWINDOW_KEYWORD            "MainWindow"
+#define QSETTINGS_BACKUPANDRESTORE_KEYWORD      "BackUpAndRestore"
+#define QSETTINGS_RACETABLEROWCOUNT_KEYWORD     "RaceTableRowCount"
+#define QSETTINGS_RANKINGOPTIONALFIELDS_KEYWORD "RankingOptionalFields"
 
 namespace Ui {
     class MainWindow;
