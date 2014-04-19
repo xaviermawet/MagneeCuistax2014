@@ -263,6 +263,7 @@ void MainWindow::updateDataBaseActionsVisibility(bool visible)
     // Menus
     this->ui->menuTeams->menuAction()->setVisible(visible);
     this->ui->menuRace->menuAction()->setVisible(visible);
+    this->ui->menuDataViewer->menuAction()->setVisible(visible);
 
     // Actions
     this->ui->actionCreateRace->setVisible(visible);
@@ -273,10 +274,14 @@ void MainWindow::updateDataBaseActionsVisibility(bool visible)
     this->ui->actionDeleteTeam->blockSignals(!visible);
     this->ui->actionCreateRace->blockSignals(!visible);
     this->ui->actionDeleteRace->blockSignals(!visible);
+    this->ui->actionOpenDataViewer->blockSignals(!visible);
 
     // Buttons
     this->ui->pushButtonCreateTeam->setVisible(visible);
     this->ui->pushButtonDeleteTeam->setVisible(visible);
+
+    // Widgets
+    this->ui->mainTabWidget->setEnabled(visible);
 }
 
 bool MainWindow::updateDataBase(const QString &dbFilePath,
@@ -933,6 +938,17 @@ void MainWindow::updateDataViewerTitle(void)
     // Data Viwer closed
     if (this->_dataViewer == NULL)
         return;
+
+    // No race created
+    if (this->_currentRaceID < 0)
+        return;
+
+    // If there is no optional field (so no sorted field)
+    if (this->_optionalFields.isEmpty())
+    {
+        this->_dataViewer->setRaceTitle(this->_comboBoxRaceList->currentText());
+        return;
+    }
 
     switch (this->_optionalFields.first())
     {
