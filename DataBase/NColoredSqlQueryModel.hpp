@@ -18,6 +18,14 @@ class NColoredSqlQueryModel : public NSqlQueryModel
     signals:
 
     public slots:
+
+    protected:
+
+        QColor _or;
+        QColor _argent;
+        QColor _bronze;
+
+        QColor _green;
 };
 
 #endif /* __NCOLOREDSQLQUERYMODEL_HPP__ */
