@@ -47,6 +47,7 @@ class DataViewer : public QWidget
         void startStopWatch(void);
         void stopStopWatch(void);
         void resetStopWatch(void);
+        void setFontSize(int fontSize);
 
     protected:
 

@@ -46,6 +46,11 @@ void DataViewer::resetStopWatch(void)
     this->_stopWatch->reset();
 }
 
+void DataViewer::setFontSize(int fontSize)
+{
+    this->setStyleSheet("font: " + QString::number(fontSize) + "pt;");
+}
+
 void DataViewer::createHeader(void)
 {
     if (this->_stopWatch != NULL)
