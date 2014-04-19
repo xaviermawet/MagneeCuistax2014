@@ -394,6 +394,12 @@ void MainWindow::on_actionOptions_triggered(void)
             settings.value(QSETTINGS_BACKUPANDRESTORE_KEYWORD, false).toBool());
     dial.setOptionalFields(this->_optionalFields);
 
+    if (this->_dataViewer == NULL)
+        dial.setDataViewerGroupBoxVisible(false);
+    else
+        connect(&dial, SIGNAL(fontSizeChange(int)),
+                this->_dataViewer, SLOT(setFontSize(int)));
+
     // Open settings dialog
     if (dial.exec() != QDialog::Accepted) // User canceled
         return;

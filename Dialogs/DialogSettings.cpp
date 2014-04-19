@@ -58,6 +58,11 @@ void DialogSettings::setOptionalFields(
     this->ui->listWidgetRankingColumns->setCurrentRow(0);
 }
 
+void DialogSettings::setDataViewerGroupBoxVisible(bool visible)
+{
+    this->ui->groupBoxDataViewer->setVisible(visible);
+}
+
 int DialogSettings::numberOfLaps(void) const
 {
     return this->ui->spinBoxNumberOfLaps->value();
@@ -157,6 +162,11 @@ void DialogSettings::on_pushButtonDown_clicked(void)
                 selectedIndex + 1, selectedItem);
 
     this->ui->listWidgetRankingColumns->setCurrentRow(selectedIndex + 1);
+}
+
+void DialogSettings::on_spinBoxFontSize_valueChanged(int fontSize)
+{
+    emit this->fontSizeChange(fontSize);
 }
 
 int DialogSettings::itemIndexFor(const RankingOptionalField &field)

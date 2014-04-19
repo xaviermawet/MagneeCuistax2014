@@ -37,12 +37,17 @@ class DialogSettings : public QDialog
         void setReloadPreviousLaps(bool reload = true);
         void setBackUpAndRestoreApplicationState(bool backUpAndRestore = true);
         void setOptionalFields(QList<RankingOptionalField> const& optionalFields);
+        void setDataViewerGroupBoxVisible(bool visible);
 
         /* Getters */
         int  numberOfLaps(void) const;
         bool isReloadPreviousLapsChecked(void) const;
         bool isBackUpAndRestoreApplicationStateChecked(void) const;
         QList<RankingOptionalField> optionalFieldsSelected(void) const;
+
+    signals:
+
+        void fontSizeChange(int fontSize);
 
     protected slots:
 
@@ -51,6 +56,7 @@ class DialogSettings : public QDialog
         void on_listWidgetRankingColumns_itemActivated(QListWidgetItem* item);
         void on_pushButtonUP_clicked(void);
         void on_pushButtonDown_clicked(void);
+        void on_spinBoxFontSize_valueChanged(int fontSize);
 
     protected:
 
