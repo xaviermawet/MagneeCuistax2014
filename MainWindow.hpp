@@ -143,6 +143,10 @@ class MainWindow : public QMainWindow
         // Tools menu
         void on_actionOptions_triggered(void);
 
+        // Data Viewer menu
+        void on_menuDataViewer_aboutToShow(void);
+        void on_actionOpenDataViewer_triggered(void);
+
         // Team Management
         void on_actionCreateTeam_triggered(void);
         void on_actionDeleteTeam_triggered(void);
@@ -161,7 +165,6 @@ class MainWindow : public QMainWindow
         void updateRankingModelQuery(void);
 
         // Data Viewer Management
-        void on_actionOpenDataViewer_triggered(void);
         void destroyDataViewer(void);
 
     protected:

@@ -399,6 +399,45 @@ void MainWindow::on_actionOptions_triggered(void)
     this->updateRankingModelQuery();
 }
 
+void MainWindow::on_menuDataViewer_aboutToShow(void)
+{
+    this->ui->actionOpenDataViewer->setText(
+                this->_dataViewer == NULL ? tr("&Open") : tr("&Close"));
+}
+
+void MainWindow::on_actionOpenDataViewer_triggered(void)
+{
+    if (this->_dataViewer != NULL)
+    {
+        delete this->_dataViewer;
+        this->_dataViewer = NULL;
+        return;
+    }
+
+    // Create new window for data viewer
+    this->_dataViewer = new DataViewer(this);
+
+    // Add a table view model
+    this->_dataViewer->setTableViewModel(this->_rankingModel);
+
+    // Change title
+    this->_dataViewer->setRaceTitle(
+                this->_comboBoxRaceList->currentText() + tr(" : Lap Ranking"));
+
+    // Connect signals/slots
+    connect(this->_stopWatch, SIGNAL(started()),
+            this->_dataViewer, SLOT(startStopWatch()));
+    connect(this->_stopWatch, SIGNAL(stopped(QTime)),
+            this->_dataViewer, SLOT(stopStopWatch()));
+    connect(this->_stopWatch, SIGNAL(reseted()),
+            this->_dataViewer, SLOT(resetStopWatch()));
+    connect(this->_dataViewer, SIGNAL(closed()),
+            this, SLOT(destroyDataViewer()));
+
+    // Display the new dataViewer window
+    this->_dataViewer->show();
+}
+
 void MainWindow::on_actionCreateTeam_triggered(void)
 {
     DialogAddTeam dial;
@@ -869,35 +908,6 @@ void MainWindow::updateRankingModelQuery(void)
                 break;
         }
     }
-}
-
-void MainWindow::on_actionOpenDataViewer_triggered(void)
-{
-    if (this->_dataViewer != NULL)
-        delete this->_dataViewer;
-
-    // Create new window for data viewer
-    this->_dataViewer = new DataViewer(this);
-
-    // Add a table view model
-    this->_dataViewer->setTableViewModel(this->_rankingModel);
-
-    // Change title
-    this->_dataViewer->setRaceTitle(
-                this->_comboBoxRaceList->currentText() + tr(" : Lap Ranking"));
-
-    // Connect signals/slots
-    connect(this->_stopWatch, SIGNAL(started()),
-            this->_dataViewer, SLOT(startStopWatch()));
-    connect(this->_stopWatch, SIGNAL(stopped(QTime)),
-            this->_dataViewer, SLOT(stopStopWatch()));
-    connect(this->_stopWatch, SIGNAL(reseted()),
-            this->_dataViewer, SLOT(resetStopWatch()));
-    connect(this->_dataViewer, SIGNAL(closed()),
-            this, SLOT(destroyDataViewer()));
-
-    // Display the new dataViewer window
-    this->_dataViewer->show();
 }
 
 void MainWindow::destroyDataViewer(void)
