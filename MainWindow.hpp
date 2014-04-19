@@ -167,6 +167,7 @@ class MainWindow : public QMainWindow
 
         // Data Viewer Management
         void destroyDataViewer(void);
+        void updateDataViewerTitle(void);
 
     protected:
 

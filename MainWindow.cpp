@@ -429,9 +429,9 @@ void MainWindow::on_actionOpenDataViewer_triggered(void)
     // Add a table view model
     this->_dataViewer->setTableViewModel(this->_rankingModel);
 
-    // Change title
-    this->_dataViewer->setRaceTitle(
-                this->_comboBoxRaceList->currentText() + tr(" : Lap Ranking"));
+    // Update title
+    this->updateDataViewerTitle();
+
 
     // Connect signals/slots
     connect(this->_stopWatch, SIGNAL(started()),
@@ -917,10 +917,36 @@ void MainWindow::updateRankingModelQuery(void)
                 break;
         }
     }
+
+    // Update DataViewer title
+    this->updateDataViewerTitle();
 }
 
 void MainWindow::destroyDataViewer(void)
 {
     delete this->_dataViewer;
     this->_dataViewer = NULL;
+}
+
+void MainWindow::updateDataViewerTitle(void)
+{
+    // Data Viwer closed
+    if (this->_dataViewer == NULL)
+        return;
+
+    switch (this->_optionalFields.first())
+    {
+        case lapCount:
+            this->_dataViewer->setRaceTitle(
+                        this->_comboBoxRaceList->currentText() + tr(" : Lap Ranking"));
+            break;
+        case bestTime:
+            this->_dataViewer->setRaceTitle(
+                        this->_comboBoxRaceList->currentText() + tr(" : Time Ranking"));
+            break;
+        default:
+            this->_dataViewer->setRaceTitle(
+                        this->_comboBoxRaceList->currentText());
+            break;
+    }
 }
