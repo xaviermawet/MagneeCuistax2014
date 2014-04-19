@@ -6,10 +6,6 @@ DialogSettings::DialogSettings(QWidget* parent) :
 {
     // GUI Configuration
     this->ui->setupUi(this);
-
-    // Manage changes
-    connect(this->ui->buttonBox, SIGNAL(clicked(QAbstractButton*)),
-            this, SLOT(applyChanges(QAbstractButton*)));
 }
 
 DialogSettings::~DialogSettings(void)
@@ -47,11 +43,50 @@ bool DialogSettings::isBackUpAndRestoreApplicationStateChecked(void) const
     return this->ui->checkBoxBackUpRestoreState->isChecked();
 }
 
-void DialogSettings::applyChanges(QAbstractButton* buttonApply)
+void DialogSettings::on_listWidgetRankingColumns_currentRowChanged(
+        int currentRow)
 {
-    // Button "Apply" not pressed
-    if (buttonApply != this->ui->buttonBox->button(QDialogButtonBox::Apply))
-        return;
+    if (currentRow == 0)
+    {
+        this->ui->pushButtonUP->setEnabled(false);
+        this->ui->pushButtonDown->setEnabled(true);
+    }
+    else if (currentRow == this->ui->listWidgetRankingColumns->count() -1)
+    {
+        this->ui->pushButtonUP->setEnabled(true);
+        this->ui->pushButtonDown->setEnabled(false);
+    }
+    else
+    {
+        this->ui->pushButtonUP->setEnabled(true);
+        this->ui->pushButtonDown->setEnabled(true);
+    }
+}
 
-    qDebug() << "Apply changes ...TODO";
+void DialogSettings::on_pushButtonUP_clicked(void)
+{
+    // Get index of the selected item
+    int selectedIndex = this->ui->listWidgetRankingColumns->currentRow();
+
+    QListWidgetItem* selectedItem =
+            this->ui->listWidgetRankingColumns->takeItem(selectedIndex);
+
+    this->ui->listWidgetRankingColumns->insertItem(
+                selectedIndex - 1, selectedItem);
+
+    this->ui->listWidgetRankingColumns->setCurrentRow(selectedIndex - 1);
+}
+
+void DialogSettings::on_pushButtonDown_clicked(void)
+{
+    // Get index of the selected item
+    int selectedIndex = this->ui->listWidgetRankingColumns->currentRow();
+
+    QListWidgetItem* selectedItem =
+            this->ui->listWidgetRankingColumns->takeItem(selectedIndex);
+
+    this->ui->listWidgetRankingColumns->insertItem(
+                selectedIndex + 1, selectedItem);
+
+    this->ui->listWidgetRankingColumns->setCurrentRow(selectedIndex + 1);
 }

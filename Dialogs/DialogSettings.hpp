@@ -42,7 +42,10 @@ class DialogSettings : public QDialog
 
     protected slots:
 
-        void applyChanges(QAbstractButton* buttonApply);
+        // Autoconnect
+        void on_listWidgetRankingColumns_currentRowChanged(int currentRow);
+        void on_pushButtonUP_clicked(void);
+        void on_pushButtonDown_clicked(void);
 
     protected:
 
