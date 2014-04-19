@@ -15,6 +15,7 @@
 #include "DataBase/DataBaseManager.hpp"
 #include "DataBase/SqlTableModelIdNotEditable.hpp"
 #include "DataBase/NSqlQueryModel.hpp"
+#include "DataBase/NColoredSqlQueryModel.hpp"
 #include "DataBase/Lap.hpp"
 
 // Dialogs
@@ -176,7 +177,7 @@ class MainWindow : public QMainWindow
         // Models
         SqlTableModelIdNotEditable* _teamListModel;
         NSqlQueryModel* _raceListModel;
-        NSqlQueryModel* _rankingModel;
+        NColoredSqlQueryModel* _rankingModel;
 
         // Race
         int   _currentRaceID;

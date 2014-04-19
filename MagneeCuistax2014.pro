@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     NTableWidget.cpp \
     Dialogs/DialogSettings.cpp \
     NTableView.cpp \
-    Widgets/DataViewer.cpp
+    Widgets/DataViewer.cpp \
+    DataBase/NColoredSqlQueryModel.cpp
 
 HEADERS  += MainWindow.hpp \
     Utils/NException.hpp \
@@ -40,7 +41,8 @@ HEADERS  += MainWindow.hpp \
     Dialogs/DialogSettings.hpp \
     NTableView.hpp \
     Widgets/DataViewer.hpp \
-    Common.hpp
+    Common.hpp \
+    DataBase/NColoredSqlQueryModel.hpp
 
 FORMS    += MainWindow.ui \
     Dialogs/DialogAddTeam.ui \

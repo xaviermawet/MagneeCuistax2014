@@ -107,7 +107,7 @@ void MainWindow::createRankingModel(void)
         delete this->_rankingModel;
 
     // Create model
-    this->_rankingModel = new NSqlQueryModel(this);
+    this->_rankingModel = new NColoredSqlQueryModel(this);
 
     // Apply the model to the ranking table
     this->ui->tableViewRanking->setModel(this->_rankingModel);
