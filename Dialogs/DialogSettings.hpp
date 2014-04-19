@@ -9,6 +9,8 @@
     #include <QtGui>
 #endif
 
+#include "Common.hpp"
+
 namespace Ui {
     class DialogSettings;
 }
@@ -30,15 +32,17 @@ class DialogSettings : public QDialog
          */
         virtual ~DialogSettings(void);
 
-        /* Getters */
+        /* Setters */
         void setNumberOfLaps(int numberOfLaps = 10);
         void setReloadPreviousLaps(bool reload = true);
         void setBackUpAndRestoreApplicationState(bool backUpAndRestore = true);
+        void setOptionalFields(QList<RankingOptionalField> const& optionalFields);
 
-        /* Setters */
+        /* Getters */
         int  numberOfLaps(void) const;
         bool isReloadPreviousLapsChecked(void) const;
         bool isBackUpAndRestoreApplicationStateChecked(void) const;
+        QList<RankingOptionalField> optionalFieldsSelected(void) const;
 
     protected slots:
 
@@ -47,6 +51,10 @@ class DialogSettings : public QDialog
         void on_listWidgetRankingColumns_itemActivated(QListWidgetItem* item);
         void on_pushButtonUP_clicked(void);
         void on_pushButtonDown_clicked(void);
+
+    protected:
+
+        int itemIndexFor(RankingOptionalField const& field);
 
     protected:
 

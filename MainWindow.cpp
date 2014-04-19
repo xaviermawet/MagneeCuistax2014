@@ -23,6 +23,12 @@ MainWindow::MainWindow(QWidget* parent) :
     this->createRaceTableContextMenu();
     this->createRankingModel();
 
+    // Restore previous MainWindows layout settings
+    this->readSettings();
+
+    // TEST - A SUPPRIMER
+    this->_optionalFields << lapCount << distance;
+
     // Connect to previous database if exists
     if (DataBaseManager::restorePreviousDataBase())
     {
@@ -38,9 +44,6 @@ MainWindow::MainWindow(QWidget* parent) :
     }
     else
         this->updateDataBaseActionsVisibility(false);
-
-    // Restore previous MainWindows layout settings
-    this->readSettings();
 }
 
 MainWindow::~MainWindow(void)
@@ -342,7 +345,8 @@ void MainWindow::on_actionOpenProject_triggered()
     try
     {
         // Open the database
-        if (this->updateDataBase(dbFilePath, DataBaseManager::openExistingDataBase))
+        if (this->updateDataBase(
+                    dbFilePath, DataBaseManager::openExistingDataBase))
             this->statusBar()->showMessage(
                     tr("Project successfully opened"), 4000);
         else
@@ -374,6 +378,7 @@ void MainWindow::on_actionOptions_triggered(void)
     QSettings settings;
     dial.setBackUpAndRestoreApplicationState(
             settings.value(QSETTINGS_BACKUPANDRESTORE_KEYWORD, false).toBool());
+    dial.setOptionalFields(this->_optionalFields);
 
     // Open settings dialog
     if (dial.exec() != QDialog::Accepted) // User canceled
@@ -389,6 +394,9 @@ void MainWindow::on_actionOptions_triggered(void)
     if (dial.isReloadPreviousLapsChecked() &&
             previousNbOfRowsDisplayed < dial.numberOfLaps())
         this->updateLapListTableContent();
+
+    this->_optionalFields = dial.optionalFieldsSelected();
+    this->updateRankingModelQuery();
 }
 
 void MainWindow::on_actionCreateTeam_triggered(void)
@@ -776,7 +784,10 @@ void MainWindow::updateRankingModelQuery(void)
                 queryString += ", MAX(LAP.end_time) ";
                 break;
             case lastTime:
-                queryString += ", LAP.end_time ";
+                if (this->_optionalFields.first() != lapCount)
+                    queryString += ", LAP.end_time ";
+                else
+                    queryString += ", (SELECT end_time FROM LAP WHERE ref_team = TEAM.num_cuistax AND ref_race = %1 ORDER BY LAP.ROWID DESC LIMIT 1) ";
                 break;
             default:
                 break;
@@ -796,16 +807,16 @@ void MainWindow::updateRankingModelQuery(void)
         {
             case lapCount:
             case distance:
-                queryString += "ORDER BY LAP.num DESC"; qDebug() << "lap ou distance";
+                queryString += "ORDER BY MAX(LAP.num) DESC";
                 break;
             case bestTime:
-                queryString += "ORDER BY MIN(LAP.end_time)"; qDebug() << "best time";
+                queryString += "ORDER BY MIN(LAP.end_time)";
                 break;
             case worstTime:
-                queryString += "ORDER BY MAX(LAP.end_time) DESC"; qDebug() << "worst time";
+                queryString += "ORDER BY MAX(LAP.end_time) DESC";
                 break;
             case lastTime:
-                queryString += "ORDER BY LAP.end_time"; qDebug() << "last time";
+                queryString += "ORDER BY LAP.end_time";
                 break;
             default:
                 break;
@@ -835,19 +846,24 @@ void MainWindow::updateRankingModelQuery(void)
         switch (this->_optionalFields.at(i))
         {
             case lapCount:
-                this->_rankingModel->setHeaderData(i + 2, Qt::Horizontal, tr("Lap count"));
+                this->_rankingModel->setHeaderData(
+                            i + 2, Qt::Horizontal, tr("Lap count"));
                 break;
             case distance:
-                this->_rankingModel->setHeaderData(i + 2, Qt::Horizontal, tr("Distance (m)"));
+                this->_rankingModel->setHeaderData(
+                            i + 2, Qt::Horizontal, tr("Distance (m)"));
                 break;
             case bestTime:
-                this->_rankingModel->setHeaderData(i + 2, Qt::Horizontal, tr("Best time"));
+                this->_rankingModel->setHeaderData(
+                            i + 2, Qt::Horizontal, tr("Best time"));
                 break;
             case worstTime:
-                this->_rankingModel->setHeaderData(i + 2, Qt::Horizontal, tr("Worst time"));
+                this->_rankingModel->setHeaderData(
+                            i + 2, Qt::Horizontal, tr("Worst time"));
                 break;
             case lastTime:
-                this->_rankingModel->setHeaderData(i + 2, Qt::Horizontal, tr("Last time"));
+                this->_rankingModel->setHeaderData(
+                            i + 2, Qt::Horizontal, tr("Last time"));
                 break;
             default:
                 break;

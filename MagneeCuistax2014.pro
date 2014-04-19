@@ -39,7 +39,8 @@ HEADERS  += MainWindow.hpp \
     NTableWidget.hpp \
     Dialogs/DialogSettings.hpp \
     NTableView.hpp \
-    Widgets/DataViewer.hpp
+    Widgets/DataViewer.hpp \
+    Common.hpp
 
 FORMS    += MainWindow.ui \
     Dialogs/DialogAddTeam.ui \

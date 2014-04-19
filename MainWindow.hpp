@@ -9,6 +9,8 @@
     #include <QtGui>
 #endif
 
+#include "Common.hpp"
+
 // Database
 #include "DataBase/DataBaseManager.hpp"
 #include "DataBase/SqlTableModelIdNotEditable.hpp"
@@ -42,16 +44,6 @@ class MainWindow : public QMainWindow
         Q_OBJECT
 
     public:
-
-        enum RankingOptionalField
-        {
-            lapCount,
-            distance,
-            bestTime,
-            worstTime,
-            lastTime
-        };
-
 
         /*!
          * \brief MainWindow : default constructor
