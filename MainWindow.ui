@@ -72,9 +72,6 @@
        </layout>
       </widget>
       <widget class="QTabWidget" name="mainTabWidget">
-       <property name="currentIndex">
-        <number>0</number>
-       </property>
        <widget class="QWidget" name="tabRaceTable">
         <attribute name="title">
          <string>Race Table</string>
@@ -124,39 +121,13 @@
          </item>
         </layout>
        </widget>
-       <widget class="QWidget" name="tabLapRanking">
+       <widget class="QWidget" name="tabRanking">
         <attribute name="title">
-         <string>Lap Ranking</string>
+         <string>Ranking</string>
         </attribute>
-        <layout class="QVBoxLayout" name="verticalLayoutTabLapRanking">
+        <layout class="QVBoxLayout" name="verticalLayoutTabRanking">
          <item>
-          <widget class="NTableView" name="tableViewLapRanking">
-           <property name="editTriggers">
-            <set>QAbstractItemView::NoEditTriggers</set>
-           </property>
-           <property name="alternatingRowColors">
-            <bool>true</bool>
-           </property>
-           <property name="selectionMode">
-            <enum>QAbstractItemView::SingleSelection</enum>
-           </property>
-           <property name="selectionBehavior">
-            <enum>QAbstractItemView::SelectRows</enum>
-           </property>
-           <attribute name="verticalHeaderVisible">
-            <bool>false</bool>
-           </attribute>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="tabTimeRanking">
-        <attribute name="title">
-         <string>Time Ranking</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayoutTabTimeRanking">
-         <item>
-          <widget class="NTableView" name="tableViewTimeRanking">
+          <widget class="NTableView" name="tableViewRanking">
            <property name="editTriggers">
             <set>QAbstractItemView::NoEditTriggers</set>
            </property>
@@ -187,7 +158,7 @@
      <x>0</x>
      <y>0</y>
      <width>930</width>
-     <height>19</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -410,22 +381,6 @@
     <hint type="destinationlabel">
      <x>396</x>
      <y>426</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mainTabWidget</sender>
-   <signal>currentChanged(int)</signal>
-   <receiver>MainWindow</receiver>
-   <slot>updateCurrentRanking()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>572</x>
-     <y>85</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>324</x>
-     <y>64</y>
     </hint>
    </hints>
   </connection>

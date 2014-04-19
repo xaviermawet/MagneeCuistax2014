@@ -67,6 +67,13 @@ void DialogSettings::on_listWidgetRankingColumns_currentRowChanged(
     }
 }
 
+void DialogSettings::on_listWidgetRankingColumns_itemActivated(QListWidgetItem *item)
+{
+    item->setCheckState(item->checkState() == Qt::Checked ?
+                            Qt::Unchecked : Qt::Checked);
+}
+
+
 void DialogSettings::on_pushButtonUP_clicked(void)
 {
     // Get index of the selected item

@@ -43,6 +43,16 @@ class MainWindow : public QMainWindow
 
     public:
 
+        enum RankingOptionalField
+        {
+            lapCount,
+            distance,
+            bestTime,
+            worstTime,
+            lastTime
+        };
+
+
         /*!
          * \brief MainWindow : default constructor
          * \param parent : pointer to a parent MainWindow if exists
@@ -67,9 +77,9 @@ class MainWindow : public QMainWindow
         void createRaceListModel(void);
 
         /*!
-         * \brief createRankingModels : create models for two ranking TableViews
+         * \brief createRankingModels : create model for the ranking Table View
          */
-        void createRankingModels(void);
+        void createRankingModel(void);
 
         /*!
          * \brief createToolBar : create all the widgets for the mainToolBar
@@ -154,9 +164,8 @@ class MainWindow : public QMainWindow
         void updateLapListTableContent(void);
         void raceStarted(void);
 
-        // Tab Management
-        void updateRankingsModelsQueries(void);
-        void updateCurrentRanking(void);
+        // Ranking Management
+        void updateRankingModelQuery(void);
 
         // Data Viewer Management
         void on_actionOpenDataViewer_triggered(void);
@@ -175,14 +184,16 @@ class MainWindow : public QMainWindow
         // Models
         SqlTableModelIdNotEditable* _teamListModel;
         NSqlQueryModel* _raceListModel;
-        NSqlQueryModel* _lapRankingModel;
-        NSqlQueryModel* _timeRankingModel;
+        NSqlQueryModel* _rankingModel;
 
         // Race
         int   _currentRaceID;
         float _currentRaceDistance;
         LapIdentifier _previousLapsInformation;
         QMenu* _raceTableContextMenu;
+
+        // Ranking
+        QList<RankingOptionalField> _optionalFields;
 };
 
 #endif /* __MAINWINDOW_HPP__ */

@@ -44,6 +44,7 @@ class DialogSettings : public QDialog
 
         // Autoconnect
         void on_listWidgetRankingColumns_currentRowChanged(int currentRow);
+        void on_listWidgetRankingColumns_itemActivated(QListWidgetItem* item);
         void on_pushButtonUP_clicked(void);
         void on_pushButtonDown_clicked(void);
 

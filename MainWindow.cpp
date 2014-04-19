@@ -2,11 +2,11 @@
 #include "ui_MainWindow.h"
 
 MainWindow::MainWindow(QWidget* parent) :
-    QMainWindow(parent), ui(new Ui::MainWindow),
-    _comboBoxRaceList(NULL), _dataViewer(NULL), _stopWatch(NULL),
-    _teamListModel(NULL), _raceListModel(NULL), _lapRankingModel(NULL),
-    _timeRankingModel(NULL), _currentRaceID(-1), _currentRaceDistance(-1),
-    _raceTableContextMenu(NULL)
+    QMainWindow(parent), ui(new Ui::MainWindow), _comboBoxRaceList(NULL),
+    _dataViewer(NULL), _stopWatch(NULL), _teamListModel(NULL),
+    _raceListModel(NULL), _rankingModel(NULL), _currentRaceID(-1),
+    _currentRaceDistance(-1), _previousLapsInformation(),
+    _raceTableContextMenu(NULL), _optionalFields()
 {
     QCoreApplication::setOrganizationName("N4k1m");
     QCoreApplication::setApplicationName("MagneeCuistax2014");
@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget* parent) :
     this->ui->setupUi(this);
     this->createToolBar();
     this->createRaceTableContextMenu();
-    this->createRankingModels();
+    this->createRankingModel();
 
     // Connect to previous database if exists
     if (DataBaseManager::restorePreviousDataBase())
@@ -56,8 +56,7 @@ MainWindow::~MainWindow(void)
     // Models
     delete this->_teamListModel;
     delete this->_raceListModel;
-    delete this->_lapRankingModel;
-    delete this->_timeRankingModel;
+    delete this->_rankingModel;
 
     // Contextal menu
     delete this->_raceTableContextMenu;
@@ -98,31 +97,17 @@ void MainWindow::createRaceListModel(void)
     this->_comboBoxRaceList->setCurrentIndex(0);
 }
 
-void MainWindow::createRankingModels(void)
+void MainWindow::createRankingModel(void)
 {
-    /* ---------------------------------------------------------------------- *
-     *                               LAP RANKING                              *
-     * ---------------------------------------------------------------------- */
-    if (this->_lapRankingModel != NULL)
-        delete this->_lapRankingModel;
+    // delete if already exists
+    if (this->_rankingModel != NULL)
+        delete this->_rankingModel;
 
     // Create model
-    this->_lapRankingModel = new NSqlQueryModel(this);
+    this->_rankingModel = new NSqlQueryModel(this);
 
-    // Apply the model to the table wiew
-    this->ui->tableViewLapRanking->setModel(this->_lapRankingModel);
-
-    /* ---------------------------------------------------------------------- *
-     *                              TIME RANKING                              *
-     * ---------------------------------------------------------------------- */
-    if (this->_timeRankingModel != NULL)
-        delete this->_timeRankingModel;
-
-    // Create model
-    this->_timeRankingModel = new NSqlQueryModel(this);
-
-    // Apply the model to the table view
-    this->ui->tableViewTimeRanking->setModel(this->_timeRankingModel);
+    // Apply the model to the ranking table
+    this->ui->tableViewRanking->setModel(this->_rankingModel);
 }
 
 void MainWindow::createToolBar(void)
@@ -459,9 +444,9 @@ void MainWindow::on_actionDeleteTeam_triggered(void)
 
         this->_teamListModel->select();
 
-        // Update the race and ranking tables content
+        // Update the race table and ranking model
         this->updateLapListTableContent();
-        this->updateCurrentRanking();
+        this->_rankingModel->refresh();
     }
     catch(NException const& exception)
     {
@@ -531,7 +516,8 @@ void MainWindow::on_tableViewTeamList_activated(const QModelIndex &index)
                << currentLapTime.toString("mm:ss:zzz");
         this->ui->tableWidgetLapList->insertRowItems(0, params);
 
-        this->updateCurrentRanking();
+        // Update ranking model
+        this->_rankingModel->refresh();
     }
     catch(NException const& exception)
     {
@@ -691,7 +677,7 @@ void MainWindow::currentRaceChanged(int currentRaceIndex)
 
     // Update all the tables based on RACE or LAP sql tables
     this->updateLapListTableContent();
-    this->updateRankingsModelsQueries();
+    this->updateRankingModelQuery();
 }
 
 void MainWindow::updateLapListTableContent(void)
@@ -767,68 +753,106 @@ void MainWindow::raceStarted(void)
     }
 }
 
-void MainWindow::updateRankingsModelsQueries(void)
+void MainWindow::updateRankingModelQuery(void)
 {
-    /* ---------------------------------------------------------------------- *
-     *                               LAP RANKING                              *
-     * ---------------------------------------------------------------------- */
-    QString queryString(
-    "SELECT TEAM.num_cuistax , TEAM.name, MAX(LAP.num), MAX(LAP.num) * %1 "
-    "FROM LAP "
-    "INNER JOIN TEAM ON TEAM.num_cuistax = LAP.ref_team "
-    "WHERE LAP.ref_race = %2 "
-    "GROUP BY TEAM.num_cuistax , TEAM.name "
-    "ORDER BY LAP.num DESC");
+    // Num cuistax and Team name are required
+    QString queryString("SELECT TEAM.num_cuistax, TEAM.name ");
 
-    // Add binding values
-    queryString = queryString.arg(
-                this->_currentRaceDistance).arg(this->_currentRaceID);
+    // Add field(s) to SELECT clause
+    foreach (RankingOptionalField field, this->_optionalFields)
+    {
+        switch (field)
+        {
+            case lapCount:
+                queryString += ", MAX(LAP.num) ";
+                break;
+            case distance:
+                queryString += ", MAX(LAP.num) * %2 ";
+                break;
+            case bestTime:
+                queryString += ", MIN(LAP.end_time) ";
+                break;
+            case worstTime:
+                queryString += ", MAX(LAP.end_time) ";
+                break;
+            case lastTime:
+                queryString += ", LAP.end_time ";
+                break;
+            default:
+                break;
+        }
+    }
+
+    // Body of query
+    queryString += "FROM LAP "
+                   "INNER JOIN TEAM ON TEAM.num_cuistax = LAP.ref_team "
+                   "WHERE LAP.ref_race = %1 "
+                   "GROUP BY TEAM.num_cuistax , TEAM.name ";
+
+    // Add sorter field
+    if (!this->_optionalFields.isEmpty())
+    {
+        switch (this->_optionalFields.first())
+        {
+            case lapCount:
+            case distance:
+                queryString += "ORDER BY LAP.num DESC"; qDebug() << "lap ou distance";
+                break;
+            case bestTime:
+                queryString += "ORDER BY MIN(LAP.end_time)"; qDebug() << "best time";
+                break;
+            case worstTime:
+                queryString += "ORDER BY MAX(LAP.end_time) DESC"; qDebug() << "worst time";
+                break;
+            case lastTime:
+                queryString += "ORDER BY LAP.end_time"; qDebug() << "last time";
+                break;
+            default:
+                break;
+        }
+    }
+
+    // binding value
+    queryString = queryString.arg(this->_currentRaceID);
+
+    // binding second value if needed
+    if (this->_optionalFields.contains(distance))
+        queryString = queryString.arg(this->_currentRaceDistance);
 
     // Create query
     QSqlQuery query(queryString);
 
     // Populate model
-    this->_lapRankingModel->setQuery(query);
+    this->_rankingModel->setQuery(query);
 
-    // Change header title
-    this->_lapRankingModel->setHeaderData(0, Qt::Horizontal, tr("Cuistax number"));
-    this->_lapRankingModel->setHeaderData(1, Qt::Horizontal, tr("Team name"));
-    this->_lapRankingModel->setHeaderData(2, Qt::Horizontal, tr("Lap count"));
-    this->_lapRankingModel->setHeaderData(3, Qt::Horizontal, tr("Distance (m)"));
+    // Change hearde title
+    this->_rankingModel->setHeaderData(0, Qt::Horizontal, tr("Cuistax number"));
+    this->_rankingModel->setHeaderData(1, Qt::Horizontal, tr("Team name"));
 
-    /* ---------------------------------------------------------------------- *
-     *                              TIME RANKING                              *
-     * ---------------------------------------------------------------------- */
-    QString queryString2(
-    "SELECT TEAM.num_cuistax , TEAM.name, MIN(LAP.end_time), MAX(LAP.end_time) "
-    "FROM LAP "
-    "INNER JOIN TEAM ON TEAM.num_cuistax = LAP.ref_team "
-    "WHERE LAP.ref_race = %1 "
-    "GROUP BY TEAM.num_cuistax , TEAM.name "
-    "ORDER BY MIN(LAP.end_time)");
-
-    // Add binding value
-    queryString2 = queryString2.arg(this->_currentRaceID);
-
-    // Create query
-    QSqlQuery query2(queryString2);
-
-    // Populate model
-    this->_timeRankingModel->setQuery(query2);
-
-    // Change header title
-    this->_timeRankingModel->setHeaderData(0, Qt::Horizontal, tr("Cuistax number"));
-    this->_timeRankingModel->setHeaderData(1, Qt::Horizontal, tr("Team name"));
-    this->_timeRankingModel->setHeaderData(2, Qt::Horizontal, tr("Best time"));
-    this->_timeRankingModel->setHeaderData(3, Qt::Horizontal, tr("Worst time"));
-}
-
-void MainWindow::updateCurrentRanking(void)
-{
-    if (this->ui->mainTabWidget->currentWidget() == this->ui->tabLapRanking)
-        this->_lapRankingModel->refresh();
-    else if (this->ui->mainTabWidget->currentWidget() == this->ui->tabTimeRanking)
-        this->_timeRankingModel->refresh();
+    // Change headers title
+    for (int i(0); i < this->_optionalFields.count(); ++i)
+    {
+        switch (this->_optionalFields.at(i))
+        {
+            case lapCount:
+                this->_rankingModel->setHeaderData(i + 2, Qt::Horizontal, tr("Lap count"));
+                break;
+            case distance:
+                this->_rankingModel->setHeaderData(i + 2, Qt::Horizontal, tr("Distance (m)"));
+                break;
+            case bestTime:
+                this->_rankingModel->setHeaderData(i + 2, Qt::Horizontal, tr("Best time"));
+                break;
+            case worstTime:
+                this->_rankingModel->setHeaderData(i + 2, Qt::Horizontal, tr("Worst time"));
+                break;
+            case lastTime:
+                this->_rankingModel->setHeaderData(i + 2, Qt::Horizontal, tr("Last time"));
+                break;
+            default:
+                break;
+        }
+    }
 }
 
 void MainWindow::on_actionOpenDataViewer_triggered(void)
@@ -840,7 +864,7 @@ void MainWindow::on_actionOpenDataViewer_triggered(void)
     this->_dataViewer = new DataViewer(this);
 
     // Add a table view model
-    this->_dataViewer->setTableViewModel(this->_lapRankingModel);
+    this->_dataViewer->setTableViewModel(this->_rankingModel);
 
     // Change title
     this->_dataViewer->setRaceTitle(
