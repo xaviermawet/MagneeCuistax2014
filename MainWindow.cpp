@@ -537,6 +537,95 @@ void MainWindow::on_actionCurrentRanking_triggered(void)
     delete document;
 }
 
+void MainWindow::on_actionPrintTeamlaps_triggered()
+{
+    // Stop if no race selected
+    if (this->_currentRaceID < 0)
+        return;
+
+    QItemSelectionModel* select = this->ui->tableViewTeamList->selectionModel();
+    if (select->selectedIndexes().isEmpty())
+    {
+        QMessageBox::information(this, tr("Error"), tr("Please select a team"));
+        return;
+    }
+
+    // Get cuistax number and name
+    int cuistaxNumber = select->selectedRows(0).first().data().toInt();
+    QString teamName = select->selectedRows(1).first().data().toString();
+    QString title(teamName + " (" + QString::number(cuistaxNumber) + ") : " +
+                     this->_comboBoxRaceList->currentText());
+
+    // Get print information
+    DialogPrint printDial;
+    printDial.setTitle(title);
+    printDial.setOrientation(QPrinter::Portrait);
+    if (printDial.exec() != QDialog::Accepted) // User canceled
+        return;
+
+    QString queryString("SELECT num, end_time "
+                  "FROM LAP "
+                  "WHERE ref_race = ? AND ref_team = ?");
+
+    QVariantList param;
+    param << this->_currentRaceID << cuistaxNumber;
+
+    try
+    {
+        QSqlQuery query = DataBaseManager::execQuery(queryString, param);
+
+        QString strStream;
+        QTextStream out(&strStream);
+
+        out <<  "<html>\n"
+                "<head>\n"
+                "<meta Content=\"Text/html; charset=utf-8\">\n"
+                <<  QString("<title>%1</title>\n").arg(printDial.title())
+                <<  "</head>\n"
+                <<  "<H1 ALIGN=LEFT>" << printDial.title() << "</H1>\n"
+                "<body bgcolor=#ffffff link=#5000A0>\n"
+                "<table border=1 cellspacing=0 cellpadding=2>\n";
+
+        // headers
+        out << "<thead><tr bgcolor=#f0f0f0>";
+        out << "<th>" + tr("Lap") + "</th>";
+        out << "<th>" + tr("Time") + "</th>";
+        out << "</tr></thead>\n";
+
+        // data table
+        while (query.next())
+        {
+            out << "<tr>";
+            QString data = query.value(0).toString();
+            out << QString("<td bkcolor=0>%1   </td>").arg((!data.isEmpty()) ? data : QString("&nbsp;"));
+
+            data = query.value(1).toTime().toString("mm:ss:zzz");
+            out << QString("<td bkcolor=0>%1   </td>").arg((!data.isEmpty()) ? data : QString("&nbsp;"));
+
+            out << "</tr>\n";
+        }
+
+        out <<  "</table>\n"
+                "</body>\n"
+                "</html>\n";
+
+        QTextDocument *document = new QTextDocument();
+        document->setHtml(strStream);
+
+        QPrinter printer;
+        printer.setOutputFormat(QPrinter::PdfFormat);
+        printer.setOutputFileName(printDial.outputFilePath());
+        printer.setOrientation(printDial.orientation());
+        document->print(&printer);
+
+        delete document;
+    }
+    catch(NException const& exception)
+    {
+        QMessageBox::warning(this, tr("Error"), exception.what());
+    }
+}
+
 void MainWindow::on_actionCreateTeam_triggered(void)
 {
     DialogAddTeam dial;

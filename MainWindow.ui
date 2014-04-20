@@ -198,6 +198,7 @@
      <string>&amp;Print</string>
     </property>
     <addaction name="actionCurrentRanking"/>
+    <addaction name="actionPrintTeamlaps"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTeams"/>
@@ -347,6 +348,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionPrintTeamlaps">
+   <property name="text">
+    <string>&amp;Team laps</string>
    </property>
   </action>
  </widget>

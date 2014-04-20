@@ -151,6 +151,7 @@ class MainWindow : public QMainWindow
 
         // Print menu
         void on_actionCurrentRanking_triggered(void);
+        void on_actionPrintTeamlaps_triggered(void);
 
         // Team Management
         void on_actionCreateTeam_triggered(void);
