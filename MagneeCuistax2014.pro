@@ -11,6 +11,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = MagneeCuistax2014
 TEMPLATE = app
 
+TRANSLATIONS = Resources/Tr/MagneeCuistax2014_fr.ts
 
 SOURCES += main.cpp\
         MainWindow.cpp \
