@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     Dialogs/DialogSettings.cpp \
     NTableView.cpp \
     Widgets/DataViewer.cpp \
-    DataBase/NColoredSqlQueryModel.cpp
+    DataBase/NColoredSqlQueryModel.cpp \
+    Dialogs/DialogPrint.cpp
 
 HEADERS  += MainWindow.hpp \
     Utils/NException.hpp \
@@ -43,14 +44,16 @@ HEADERS  += MainWindow.hpp \
     NTableView.hpp \
     Widgets/DataViewer.hpp \
     Common.hpp \
-    DataBase/NColoredSqlQueryModel.hpp
+    DataBase/NColoredSqlQueryModel.hpp \
+    Dialogs/DialogPrint.hpp
 
 FORMS    += MainWindow.ui \
     Dialogs/DialogAddTeam.ui \
     Dialogs/DialogCreateRace.ui \
     Widgets/NStopWatch.ui \
     Dialogs/DialogSettings.ui \
-    Widgets/DataViewer.ui
+    Widgets/DataViewer.ui \
+    Dialogs/DialogPrint.ui
 
 RESOURCES += \
     Resources.qrc

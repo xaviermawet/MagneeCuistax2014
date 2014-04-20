@@ -5,7 +5,6 @@
 
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     #include <QtWidgets>
-    #include <QPrinter>
 #else
     #include <QtGui>
 #endif
@@ -23,6 +22,7 @@
 #include "Dialogs/DialogAddTeam.hpp"
 #include "Dialogs/DialogCreateRace.hpp"
 #include "Dialogs/DialogSettings.hpp"
+#include "Dialogs/DialogPrint.hpp"
 
 // Personal Widgets
 #include "Widgets/NStopWatch.hpp"

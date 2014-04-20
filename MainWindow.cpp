@@ -460,11 +460,9 @@ void MainWindow::on_actionOpenDataViewer_triggered(void)
 
 void MainWindow::on_actionCurrentRanking_triggered(void)
 {
+    // Stop if no race selected
     if (this->_currentRaceID < 0)
         return;
-
-    QString strStream;
-    QTextStream out(&strStream);
 
     QString title(this->_comboBoxRaceList->currentText());
     switch (this->_optionalFields.first())
@@ -479,11 +477,14 @@ void MainWindow::on_actionCurrentRanking_triggered(void)
             break;
     }
 
-    QString fileName = QFileDialog::getSaveFileName(
-                this, tr("Select file destination"), QDir::homePath(),
-                tr("Pdf File(*.pdf)"));
-    if (fileName.isEmpty()) // User canceled
+    // Get print information
+    DialogPrint printDial;
+    printDial.setTitle(title);
+    if (printDial.exec() != QDialog::Accepted) // User canceled
         return;
+
+    QString strStream;
+    QTextStream out(&strStream);
 
     const int rowCount = this->_rankingModel->rowCount();
     const int columnCount = this->_rankingModel->columnCount();
@@ -491,9 +492,9 @@ void MainWindow::on_actionCurrentRanking_triggered(void)
     out <<  "<html>\n"
             "<head>\n"
             "<meta Content=\"Text/html; charset=utf-8\">\n"
-            <<  QString("<title>%1</title>\n").arg(title)
+            <<  QString("<title>%1</title>\n").arg(printDial.title())
             <<  "</head>\n"
-            <<  "<H1 ALIGN=LEFT>" << title << "</H1>\n"
+            <<  "<H1 ALIGN=LEFT>" << printDial.title() << "</H1>\n"
             "<body bgcolor=#ffffff link=#5000A0>\n"
             "<table border=1 cellspacing=0 cellpadding=2>\n";
 
@@ -529,8 +530,8 @@ void MainWindow::on_actionCurrentRanking_triggered(void)
 
     QPrinter printer;
     printer.setOutputFormat(QPrinter::PdfFormat);
-    printer.setOutputFileName(fileName);
-    printer.setOrientation(QPrinter::Landscape);
+    printer.setOutputFileName(printDial.outputFilePath());
+    printer.setOrientation(printDial.orientation());
     document->print(&printer);
 
     delete document;
