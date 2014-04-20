@@ -458,6 +458,84 @@ void MainWindow::on_actionOpenDataViewer_triggered(void)
     this->_dataViewer->show();
 }
 
+void MainWindow::on_actionCurrentRanking_triggered(void)
+{
+    if (this->_currentRaceID < 0)
+        return;
+
+    QString strStream;
+    QTextStream out(&strStream);
+
+    QString title(this->_comboBoxRaceList->currentText());
+    switch (this->_optionalFields.first())
+    {
+        case lapCount:
+            title += tr(" : Lap Ranking");
+            break;
+        case bestTime:
+            title += tr(" : Time Ranking");
+            break;
+        default:
+            break;
+    }
+
+    QString fileName = QFileDialog::getSaveFileName(
+                this, tr("Select file destination"), QDir::homePath(),
+                tr("Pdf File(*.pdf)"));
+    if (fileName.isEmpty()) // User canceled
+        return;
+
+    const int rowCount = this->_rankingModel->rowCount();
+    const int columnCount = this->_rankingModel->columnCount();
+
+    out <<  "<html>\n"
+            "<head>\n"
+            "<meta Content=\"Text/html; charset=utf-8\">\n"
+            <<  QString("<title>%1</title>\n").arg(title)
+            <<  "</head>\n"
+            <<  "<H1 ALIGN=LEFT>" << title << "</H1>\n"
+            "<body bgcolor=#ffffff link=#5000A0>\n"
+            "<table border=1 cellspacing=0 cellpadding=2>\n";
+
+    // headers
+    out << "<thead><tr bgcolor=#f0f0f0>";
+    for (int column(0); column < columnCount; ++column)
+        if (!this->ui->tableViewRanking->isColumnHidden(column))
+            out << QString("<th>%1</th>").arg(this->_rankingModel->headerData(column, Qt::Horizontal).toString());
+    out << "</tr></thead>\n";
+
+    // data table
+    for (int row(0); row < rowCount; ++row)
+    {
+        out << "<tr>";
+        for (int column(0); column < columnCount; ++column)
+        {
+            if (!this->ui->tableViewRanking->isColumnHidden(column))
+            {
+                QString data = this->_rankingModel->data(this->_rankingModel->index(row, column)).toString().simplified();
+                out << QString("<td bkcolor=0>%1   </td>").arg((!data.isEmpty()) ? data : QString("&nbsp;"));
+            }
+        }
+
+        out << "</tr>\n";
+    }
+
+    out <<  "</table>\n"
+            "</body>\n"
+            "</html>\n";
+
+    QTextDocument *document = new QTextDocument();
+    document->setHtml(strStream);
+
+    QPrinter printer;
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    printer.setOutputFileName(fileName);
+    printer.setOrientation(QPrinter::Landscape);
+    document->print(&printer);
+
+    delete document;
+}
+
 void MainWindow::on_actionCreateTeam_triggered(void)
 {
     DialogAddTeam dial;

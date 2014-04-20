@@ -193,11 +193,18 @@
     </property>
     <addaction name="actionOpenDataViewer"/>
    </widget>
+   <widget class="QMenu" name="menuPrint">
+    <property name="title">
+     <string>&amp;Print</string>
+    </property>
+    <addaction name="actionCurrentRanking"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuTeams"/>
    <addaction name="menuRace"/>
    <addaction name="menuTools"/>
    <addaction name="menuDataViewer"/>
+   <addaction name="menuPrint"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <property name="movable">
@@ -331,18 +338,29 @@
     <string>Ctrl+V</string>
    </property>
   </action>
+  <action name="actionCurrentRanking">
+   <property name="text">
+    <string>Current &amp;ranking</string>
+   </property>
+   <property name="toolTip">
+    <string>Print the current ranking</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>NTableWidget</class>
-   <extends>QTableWidget</extends>
-   <header location="global">NTableWidget.hpp</header>
-  </customwidget>
-  <customwidget>
    <class>NTableView</class>
    <extends>QTableView</extends>
    <header location="global">NTableView.hpp</header>
+  </customwidget>
+  <customwidget>
+   <class>NTableWidget</class>
+   <extends>QTableWidget</extends>
+   <header location="global">NTableWidget.hpp</header>
   </customwidget>
  </customwidgets>
  <resources>

@@ -5,6 +5,7 @@
 
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
     #include <QtWidgets>
+    #include <QPrinter>
 #else
     #include <QtGui>
 #endif
@@ -147,6 +148,9 @@ class MainWindow : public QMainWindow
         // Data Viewer menu
         void on_menuDataViewer_aboutToShow(void);
         void on_actionOpenDataViewer_triggered(void);
+
+        // Print menu
+        void on_actionCurrentRanking_triggered(void);
 
         // Team Management
         void on_actionCreateTeam_triggered(void);
